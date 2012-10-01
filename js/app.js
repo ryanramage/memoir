@@ -1,35 +1,34 @@
 define('js/app',[
     'jquery',
-    'underscore',
-    'handlebars',
-    'couchr',
     'garden-app-support',
-    'hbt!templates/test',
-    'hbt!templates/all_doc',
+    'director',
+    'events',
+    'js/quick',
+    'js/position'
 ],
-function($, _, handlebars, couchr, garden, greeting_t, list_t){
+function($, garden, director, events, quick, position){
     var exports = {};
+    var emitter = new events.EventEmitter();
+    var coords;
 
     /**
      * This is where you will put things you can do before the dom is loaded.
      */
     exports.init = function() {
+        position.init(function(err, positionInfo) {
+            coords = positionInfo.coords;
+            emitter.emit('location', coords);
+        });
     }
 
     /**
      * This that occur after the dom has loaded.
      */
     exports.on_dom_ready = function(){
-        garden.get_garden_ctx(function(err, garden_ctx){
-            $('.main').append(greeting_t(garden_ctx));
-        })
-
-        couchr.get('_db/_all_docs', function (err, resp) {
-            $('.main').append(list_t(resp));
+        router = director.Router({
+            '/quick' : quick.ui
         });
-
+        router.init('/quick');
     }
-
-
     return exports;
 });

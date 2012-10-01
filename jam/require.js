@@ -2052,6 +2052,11 @@ var jam = {
             "main": "couchr-browser.js"
         },
         {
+            "name": "director",
+            "location": "jam/director",
+            "main": "director.js"
+        },
+        {
             "name": "domReady",
             "location": "jam/domReady",
             "main": "domReady.js"
@@ -2093,7 +2098,11 @@ var jam = {
         }
     ],
     "version": "0.2.6",
-    "shim": {}
+    "shim": {
+        "director": {
+            "exports": "Router"
+        }
+    }
 };
 
 if (typeof require !== "undefined" && require.config) {

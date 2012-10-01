@@ -15,11 +15,53 @@
 
   </head>
 
-  <body data-spy="scroll" data-target=".subnav" data-offset="50">
-    <div class="main">
+  <body >
+      <div id="dashboard-topbar">
+
+      </div>
+
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <div class="span2">
+              <div class="well sidebar-nav">
+                  <ul class="nav nav-list">
+                    <li class="nav-header">Main</li>
+                    <li class="active">
+                        <a href="#/quick">Quick Entry</a>
+                    </li>
+                    <li>
+                      <a href="#/calendar">Calendar</a>
+                    </li>
+                    <li>
+                       <a href="#/journal">Journal</a>
+                    </li>
+                    <li>
+                      <a href="#/people">People</a>
+                    </li>
+                    <li class="nav-header">Upload</li>
+                    <li>
+
+                        <div class="btn-group">
+                                  <a class="btn" id="fileSelect" rel="tooltip" title="Upload Files"><i class="icon-upload"></i></a>
+                                  <a class="btn tray" href="./tray.jnlp" rel="tooltip" title="Start Tray Uploader"><i class="icon-inbox"></i></a>
+
+                        </div>
+                        <input  id="fileUploader" type="file" multiple accept="audio/mp3" style="display:none">
 
 
-    </div>
+                    <li class="month_summary nav-header hide">Month Summary</li>
+                    <li class="month_summary hide"><span class="tag-total"></span> tags</li>
+                    <li class="month_summary hide"><span class="audio-total"></span> hrs audio</li>
+
+                  </ul>
+              </div>
+
+          </div>
+          <div class="span10 main">
+            <!--Body content-->
+          </div>
+        </div>
+      </div>
 
 
     <!-- Le javascript
