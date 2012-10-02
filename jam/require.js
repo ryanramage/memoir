@@ -2097,6 +2097,11 @@ var jam = {
             "main": "./lib/marked.js"
         },
         {
+            "name": "moment",
+            "location": "jam/moment",
+            "main": "moment.js"
+        },
+        {
             "name": "text",
             "location": "jam/text",
             "main": "text.js"
