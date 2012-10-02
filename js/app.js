@@ -19,6 +19,7 @@ function($, garden, director, events, quick, position){
             coords = positionInfo.coords;
             emitter.emit('location', coords);
         });
+        quick.setSelector('.main');
     }
 
     /**
@@ -26,9 +27,14 @@ function($, garden, director, events, quick, position){
      */
     exports.on_dom_ready = function(){
         router = director.Router({
-            '/quick' : quick.ui
+            '/quick/tag' : quick.tag,
+            '/quick/people' : quick.people,
+            '/quick/journal' : quick.journal,
+            '/quick' : function() {
+                router.setRoute('/quick/tag');
+            }
         });
-        router.init('/quick');
+        router.init('/quick/tag');
     }
     return exports;
 });

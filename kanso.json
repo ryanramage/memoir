@@ -4,7 +4,7 @@
     "description": "A personal micro-tagging and diary application",
     "long_description": "My Path lets you keep a history of things that happen to you, with an easy to use workflow. Here is how it works.\n\n - When something memorable happens, micro-tag it. We provide a way to tag the event with as little friction as possible.\n - Later that day, you can review your events and add extra information. The who, what, where.\n - We also provide a wiki like diary page to summarize the day.\n\n\nYou will be supprised by two things. First, The number of events that occur to you over the day. Second, how much you will be able to recall by such a system.",
     "url": "https://github.com/eckoit/my-path",
-    "categories": ["productivity", "journal"],
+    "categories": ["productivity", ""],
     "flattr_user_id" : "eckoit",
     "attachments": ["css", "img", "jam", "js",  "index.html", "application.appcache", "templates"],
     "modules": "couch",

@@ -20,6 +20,11 @@ var jam = {
             "main": "domReady.js"
         },
         {
+            "name": "EpicEditor",
+            "location": "jam/EpicEditor",
+            "main": "./src/editor.js"
+        },
+        {
             "name": "events",
             "location": "jam/events",
             "main": "events.js"
@@ -43,6 +48,11 @@ var jam = {
             "name": "jquery",
             "location": "jam/jquery",
             "main": "jquery.js"
+        },
+        {
+            "name": "marked",
+            "location": "jam/marked",
+            "main": "./lib/marked.js"
         },
         {
             "name": "text",

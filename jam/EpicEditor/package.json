@@ -1,0 +1,20 @@
+{
+  "name": "EpicEditor",
+  "description": "An embeddable JavaScript Markdown editor with split fullscreen editing, live previewing, automatic draft saving, offline support, and more. This is an AMD fork",
+  "author": "Oscar Godson",
+  "version": "0.2.5",
+  "main": "./src/editor.js",
+  "repository": "git://github.com/ryanramage/EpicEditor.git",
+  "homepage": "https://github.com/ryanramage/EpicEditor",
+  "keywords": [ "markdown", "markup", "html" ],
+  "tags": [ "markdown", "markup", "html" ],
+  "dependencies" : {
+      "marked": null
+  },
+  "maintainers":[
+        {
+            "name":"Ryan Ramage",
+            "web":"https://github.com/ryanramage"
+        }
+    ]
+}
