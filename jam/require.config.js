@@ -10,6 +10,11 @@ var jam = {
             "main": "couchr-browser.js"
         },
         {
+            "name": "d3",
+            "location": "jam/d3",
+            "main": "d3.v2.js"
+        },
+        {
             "name": "director",
             "location": "jam/director",
             "main": "director.js"
@@ -72,6 +77,9 @@ var jam = {
     ],
     "version": "0.2.6",
     "shim": {
+        "d3": {
+            "exports": "d3"
+        },
         "director": {
             "exports": "Router"
         }
