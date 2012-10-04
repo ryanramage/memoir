@@ -208,7 +208,7 @@ define('js/timeline',[
             }
         }
 
-        var update_url_hash = _.debounce(update_url_hash, 300);
+        var update_url_hash = _.debounce(update_url_hash, 150);
 
         function zoom() {
 
