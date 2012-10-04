@@ -192,7 +192,6 @@ define('js/timeline',[
             if (_.isFunction(history.replaceState)) {
                 var date = date_utils.stringifyDate(scrubber_date);
                 var duration = getDuration(x.domain());
-                console.log(x_zoom.scale());
                 history.replaceState({}, date, "#/timeline/" + date + '/' + duration);
             }
         }
