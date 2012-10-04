@@ -22,7 +22,7 @@ define('js/timeline',[
     exports.time = function(textDate) {
         options.emitter.emit('section', 'timeline');
         var initialDate = date_utils.parseDate(textDate);
-        var scale_info = getToScaleInfo(initialDate, scales.day);
+        var scale_info = getToScaleInfo(initialDate, scales.week);
         createTimeline(initialDate, scale_info);
     }
 
@@ -30,11 +30,11 @@ define('js/timeline',[
        options.emitter.emit('section', 'timeline');
        $(selector).html(timeline_t());
        var initialDate = new Date();
-       var scale_info = getToScaleInfo(initialDate, scales.day);
+       var scale_info = getToScaleInfo(initialDate, scales.week);
        createTimeline(initialDate, scale_info);
     }
 
-    exports.time_and_zoom = function(time, zoom) {
+    exports.time_and_zoom = function(textDate, zoom) {
         options.emitter.emit('section', 'timeline');
         $(selector).html(timeline_t());
         var initialDate = date_utils.parseDate(textDate);
@@ -96,7 +96,7 @@ define('js/timeline',[
         var svg = d3.select(selector).append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
-            .call(x_zoom.x(x).scaleExtent([0.5, 125000000]).on("zoom", zoom));
+            .call(x_zoom.x(x).scaleExtent(scale_info.scale_extent).on("zoom", zoom));
 
         svg.append("defs")
             .append("clipPath")
@@ -192,6 +192,7 @@ define('js/timeline',[
             if (_.isFunction(history.replaceState)) {
                 var date = date_utils.stringifyDate(scrubber_date);
                 var duration = getDuration(x.domain());
+                console.log(x_zoom.scale());
                 history.replaceState({}, date, "#/timeline/" + date + '/' + duration);
             }
         }
@@ -290,13 +291,13 @@ define('js/timeline',[
     }
 
     function getScaleExtent(scale) {
-        if (scale <= scales.minute) return [0, 1];
-        if (scale <= scales.hour) return [0, 1];
-        if (scale <= scales.day) return [0, 1];
-        if (scale <= scales.week) return [0, 1];
-        if (scale <= scales.month) return [0, 1];
-        if (scale <= scales.year) return [0, 1];
-        return [0.5, 125000000];
+        if (scale <= scales.minute) return [0.0000003, 6];
+        if (scale <= scales.hour) return [0.000003, 378];
+        if (scale <= scales.day) return [0.0004, 5000];
+        if (scale <= scales.week) return [0.0005, 60144];
+        if (scale <= scales.month) return [0.005, 221672];
+        if (scale <= scales.year) return [0.05, 3174442];
+        return [0.5, 325932957];
     }
 
 
