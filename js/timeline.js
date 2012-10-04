@@ -167,8 +167,8 @@ define('js/timeline',[
             .attr("height",50)
             .attr("width", function(d) {  return x(d.end) - x(d.start); })
             .attr("fill", "#2d578b")
-            .on('click', function(d,i){  console.log('click');    $(this).addClass('hover')   })
-            .on('mouseover', function(d,i){ console.log('mo'); $(this).addClass('hover')   })
+            .on('click', function(d,i){      $(this).addClass('hover')   })
+            .on('mouseover', function(d,i){  $(this).addClass('hover')   })
             .on('mouseout', function(d,i){  $(this).removeClass('hover')   });
 
         var scrapbook_space = tags.append("g").attr("clip-path", "url(#clip)");
@@ -196,10 +196,11 @@ define('js/timeline',[
         var scrubber_date;
         var update_url_hash = function(){
             if (_.isFunction(history.replaceState)) {
-                _.defer(function(){
-                    store.set('timeline_current', { date : scrubber_date, duration: duration })
-                });
                 var date = date_utils.stringifyDate(scrubber_date);
+                _.defer(function(){
+                    store.set('timeline_current', { date : date, duration: duration })
+                });
+
                 var duration = getDuration(x.domain());
                 history.replaceState({}, date, "#/timeline/" + date + '/' + duration);
 

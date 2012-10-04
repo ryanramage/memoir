@@ -65,6 +65,11 @@ var jam = {
             "main": "moment.js"
         },
         {
+            "name": "store",
+            "location": "jam/store",
+            "main": "store"
+        },
+        {
             "name": "text",
             "location": "jam/text",
             "main": "text.js"
