@@ -5,12 +5,14 @@ define('js/quick', [
     'couchr',
     'EpicEditor',
     'moment',
+    'jquery-lifestream',
     'hbt!templates/quick',
     'hbt!templates/quick_tag',
     'hbt!templates/quick_people',
     'hbt!templates/quick_people_row',
-    'hbt!templates/quick_journal'
-], function ($, _, handlebars, couchr, EpicEditor, moment, base_t, tag_t, people_t, people_row_t, journal_t) {
+    'hbt!templates/quick_journal',
+    'hbt!templates/quick_lifestream'
+], function ($, _, handlebars, couchr, EpicEditor, moment, lifestream, base_t, tag_t, people_t, people_row_t, journal_t, lifestream_t) {
 
     var exports = {};
     var selector = '.main'
@@ -68,11 +70,31 @@ define('js/quick', [
         var editor = new EpicEditor().load();
     }
 
+    exports.lifestream = function() {
+        showNav('lifestream');
+        $(selector).find('.quick_form').html(lifestream_t());
+        $('#lifestream').lifestream({
+            list:[
+              {
+                service: "github",
+                user: "ryanramage"
+              },
+              {
+                service: "twitter",
+                user: "eckoit"
+              }
+            ]
+        });
+    }
+
+
+
     exports.routes = function() {
        return  {
             '/quick/tag' : exports.tag,
             '/quick/people' : exports.people,
             '/quick/journal' : exports.journal,
+            '/quick/lifestream' : exports.lifestream,
             '/quick' : exports.tag
         }
     }

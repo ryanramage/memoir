@@ -2043,6 +2043,11 @@ var requirejs, require, define;
 var jam = {
     "packages": [
         {
+            "name": "async",
+            "location": "jam/async",
+            "main": "./lib/async"
+        },
+        {
             "name": "bootstrap",
             "location": "jam/bootstrap"
         },
@@ -2095,6 +2100,11 @@ var jam = {
             "name": "jquery",
             "location": "jam/jquery",
             "main": "jquery.js"
+        },
+        {
+            "name": "jquery-lifestream",
+            "location": "jam/jquery-lifestream",
+            "main": "core.js"
         },
         {
             "name": "marked",
