@@ -4,9 +4,10 @@ define('js/timeline',[
     'handlebars',
     'couchr',
     'd3',
+    'store',
     'js/date_utils',
     'hbt!templates/timeline'
-], function($, _, handlebars, couchr, d3, date_utils, timeline_t){
+], function($, _, handlebars, couchr, d3, store, date_utils, timeline_t){
     var exports = {};
     var selector = '.main'
     var options;
@@ -31,6 +32,11 @@ define('js/timeline',[
        $(selector).html(timeline_t());
        var initialDate = new Date();
        var scale_info = getToScaleInfo(initialDate, scales.week);
+       var stored_timeline = store.get('timeline_current');
+       if (stored_timeline) {
+           initialDate = date_utils.parseDate(stored_timeline.date);
+           scale_info = getToScaleInfo(initialDate, stored_timeline.duration);
+       }
        createTimeline(initialDate, scale_info);
     }
 
@@ -190,9 +196,14 @@ define('js/timeline',[
         var scrubber_date;
         var update_url_hash = function(){
             if (_.isFunction(history.replaceState)) {
+                _.defer(function(){
+                    store.set('timeline_current', { date : scrubber_date, duration: duration })
+                });
                 var date = date_utils.stringifyDate(scrubber_date);
                 var duration = getDuration(x.domain());
                 history.replaceState({}, date, "#/timeline/" + date + '/' + duration);
+
+
             }
         }
 
