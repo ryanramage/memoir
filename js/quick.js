@@ -84,6 +84,8 @@ define('js/quick', [
                 user: "eckoit"
               }
             ]
+        }, function(err, data){
+            console.log(err, data);
         });
     }
 
