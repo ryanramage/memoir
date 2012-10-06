@@ -1,6 +1,7 @@
 define('js/quick', [
     'jquery',
     'underscore',
+    'async',
     'handlebars',
     'couchr',
     'EpicEditor',
@@ -12,7 +13,7 @@ define('js/quick', [
     'hbt!templates/quick_people_row',
     'hbt!templates/quick_journal',
     'hbt!templates/quick_lifestream'
-], function ($, _, handlebars, couchr, EpicEditor, moment, lifestream, base_t, tag_t, people_t, people_row_t, journal_t, lifestream_t) {
+], function ($, _, async, handlebars, couchr, EpicEditor, moment, lifestream, base_t, tag_t, people_t, people_row_t, journal_t, lifestream_t) {
 
     var exports = {};
     var selector = '.main'
@@ -73,7 +74,7 @@ define('js/quick', [
     exports.lifestream = function() {
         showNav('lifestream');
         $(selector).find('.quick_form').html(lifestream_t());
-        $('#lifestream').lifestream({
+        var settings = {
             list:[
               {
                 service: "github",
@@ -84,12 +85,40 @@ define('js/quick', [
                 user: "eckoit"
               }
             ]
-        }, function(err, data){
-            console.log(err, data);
+        };
+        async.parallel({
+            lifestream : function(cb){
+                $('#lifestream').lifestream(settings, cb);
+            },
+            previous : function(cb) {
+                couchr.get('_ddoc/_view/service_by_date', {limit: 200}, function(err, resp){
+                    var ids = {};
+                    _.each(resp.rows, function(row){
+                        var state = 'exists';
+                        if (row.value === true) state = 'ignore';
+                        ids[row.id] = state;
+                    });
+                    cb(null, ids);
+                });
+            }
+        }, function(err, results){
+            var docs = [];
+            _.each(results.lifestream, function(item){
+                item._id = item.config.service + '-' + item.date.getTime();
+                if (results.previous[item._id]) return;
+                item.type = 'lifestream.service';
+                item.timestamp = item.date.getTime();
+                delete item.config._settings;
+                docs.push(item);
+            });
+            if (docs.length > 0){
+                couchr.post('_db/_bulk_docs', {docs: docs}, function(err, resp){
+                    console.log(err, resp);
+                });
+            }
+
         });
     }
-
-
 
     exports.routes = function() {
        return  {

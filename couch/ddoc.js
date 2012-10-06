@@ -17,6 +17,16 @@ exports.rewrites = [
 ];
 
 
+exports.views.service_by_date = {
+    map : function(doc) {
+        if (doc.type !== 'lifestream.service' || !doc.timestamp) return;
+        var d = new Date(doc.timestamp);
+        var value = null;
+        if (doc.ignored) value = true;
+        emit(d.getTime(), value);
+    }
+}
+
 
 exports.validate_doc_update = function(newDoc, oldDoc, userCtx, secObj) {
     var ddoc = this;
