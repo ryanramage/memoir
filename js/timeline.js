@@ -33,7 +33,7 @@ define('js/timeline',[
     exports.time = function(textDate) {
         options.emitter.emit('section', 'timeline');
         var initialDate = date_utils.parseDate(textDate);
-        var scale_info = getToScaleInfo(initialDate, scales.week);
+        var scale_info = scales.getToScaleInfo(initialDate, scales.week);
         createTimeline(initialDate, scale_info);
     }
 
@@ -41,11 +41,11 @@ define('js/timeline',[
        options.emitter.emit('section', 'timeline');
        $(selector).html(timeline_t());
        var initialDate = new Date();
-       var scale_info = getToScaleInfo(initialDate, scales.week);
+       var scale_info = scales.getToScaleInfo(initialDate, scales.week);
        var stored_timeline = store.get('timeline_current');
        if (stored_timeline) {
            initialDate = date_utils.parseDate(stored_timeline.date);
-           scale_info = getToScaleInfo(initialDate, stored_timeline.duration);
+           scale_info = scales.getToScaleInfo(initialDate, stored_timeline.duration);
        }
        createTimeline(initialDate, scale_info);
     }
