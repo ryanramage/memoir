@@ -18,6 +18,8 @@ define('js/timeline',[
 ], function($, _, handlebars, couchr, d3, store, events, scales, AudioTrack, ImageTrack, JournalTrack, ScrapbookTrack, ServiceTrack, TagTrack, date_utils, timeline_t){
     var exports = {};
     var selector = '.main'
+    var $canvas;
+    var $gutter;
     var options;
     // this is the main emitter that the tracks will use
     var track_emitter = new events.EventEmitter();
@@ -85,6 +87,20 @@ define('js/timeline',[
                     name : 'Images',
                     y: 31,
                     height: 60
+                },
+                {
+                    track_type: 'service',
+                    name : 'Ryan Github',
+                    y: 91,
+                    height: 16,
+                    service_name: 'github'
+                },
+                {
+                    track_type: 'service',
+                    name : 'Eckoit',
+                    y: 108,
+                    height: 16,
+                    service_name: 'twitter'
                 }
             ]
         });
@@ -92,7 +108,7 @@ define('js/timeline',[
 
 
 
-    function init_tracks (x, y, width, height, group, emitter, callback) {
+    function init_tracks (x, y, width, height, group, emitter, $canvas, $gutter, callback) {
         get_tracks(function(err, tracks){
             var objectified = [];
 
@@ -102,7 +118,9 @@ define('js/timeline',[
                 width : width,
                 height : height,
                 group : group,
-                emitter : emitter
+                emitter : emitter,
+                $canvas : $canvas,
+                $gutter : $gutter
             }
             _.each(tracks.rows, function(track){
                 switch (track.track_type) {
@@ -129,9 +147,22 @@ define('js/timeline',[
 
 
     function createTimeline(initialDate, scale_info) {
+
+
+
         var margin = {top: 0, right: 0, bottom: 12, left: 24},
             width = 960 - margin.left - margin.right,
             height = 500 - margin.top - margin.bottom;
+
+        $timeline = $(selector).find('.timeline');
+        $canvas = $(selector).find('.canvas');
+        $gutter = $(selector).find('.gutter');
+
+        $canvas.width(width).height(height);
+        $gutter.height(height);
+        $timeline.width(width + $gutter.width());
+
+
 
         var x = d3.time.scale()
             .domain([scale_info.left_date, scale_info.right_date])
@@ -154,7 +185,7 @@ define('js/timeline',[
 
         var x_zoom = d3.behavior.zoom();
 
-        var svg = d3.select(selector).append("svg")
+        var svg = d3.select($canvas.get(0)).append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
             .call(x_zoom.x(x).scaleExtent(scale_info.scale_extent).on("zoom", zoom));
@@ -234,7 +265,7 @@ define('js/timeline',[
         }
 
 
-        init_tracks(x, y, width, height, track_space, track_emitter, function(err, tracks){
+        init_tracks(x, y, width, height, track_space, track_emitter, $canvas, $gutter, function(err, tracks){
            draw_tracks(tracks);
         });
 
