@@ -70,6 +70,12 @@ define('js/scales', ['d3'], function (d3) {
         if (from_scale == scales.minute) return scales.hour;
 
     }
+
+    scales.getToScaleInfoFromDomain = function(domain) {
+
+    }
+
+
     scales.getToScaleInfo = function(middle_date, to_scale) {
         var x = to_scale/2;
         var left_date = new Date(middle_date.getTime() - x);

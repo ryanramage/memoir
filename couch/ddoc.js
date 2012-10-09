@@ -27,6 +27,16 @@ exports.views.service_by_date = {
     }
 }
 
+exports.views.service_by_service_and_date = {
+    map : function(doc) {
+        if (doc.type !== 'lifestream.service' || !doc.timestamp || doc.ignored || !doc.config || !doc.config.service) return;
+        var d = new Date(doc.timestamp);
+
+        emit([doc.config.service, d.getTime()], null);
+    }
+}
+
+
 
 exports.validate_doc_update = function(newDoc, oldDoc, userCtx, secObj) {
     var ddoc = this;
