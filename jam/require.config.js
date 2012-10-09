@@ -10,6 +10,11 @@ var jam = {
             "location": "jam/bootstrap"
         },
         {
+            "name": "Class",
+            "location": "jam/Class",
+            "main": "class.js"
+        },
+        {
             "name": "couchr",
             "location": "jam/couchr",
             "main": "couchr-browser.js"

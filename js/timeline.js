@@ -5,12 +5,22 @@ define('js/timeline',[
     'couchr',
     'd3',
     'store',
+    'events',
+    'js/scales',
+    'js/AudioTrack',
+    'js/ImageTrack',
+    'js/JournalTrack',
+    'js/ScrapbookTrack',
+    'js/ServiceTrack',
+    'js/TagTrack',
     'js/date_utils',
     'hbt!templates/timeline'
-], function($, _, handlebars, couchr, d3, store, date_utils, timeline_t){
+], function($, _, handlebars, couchr, d3, store, events, scales, AudioTrack, ImageTrack, JournalTrack, ScrapbookTrack, ServiceTrack, TagTrack, date_utils, timeline_t){
     var exports = {};
     var selector = '.main'
     var options;
+    // this is the main emitter that the tracks will use
+    var track_emitter = new events.EventEmitter();
 
 
     exports.init = function (opts) {
@@ -44,7 +54,7 @@ define('js/timeline',[
         options.emitter.emit('section', 'timeline');
         $(selector).html(timeline_t());
         var initialDate = date_utils.parseDate(textDate);
-        var scale_info = getToScaleInfo(initialDate, zoom);
+        var scale_info = scales.getToScaleInfo(initialDate, zoom);
         createTimeline(initialDate, scale_info);
     }
 
@@ -60,18 +70,52 @@ define('js/timeline',[
     }
 
 
-    var data = [
-        { start: new Date(2011, 1,1), end: new Date(2011,1,2)},
-        { start: new Date(2011, 1,3), end: new Date(2011,1,4)}
-    ];
+    function get_tracks(callback) {
+        //couchr.get('_tracks', _.cbalter(callback, 'rows'));
+        callback(null, {
+            rows : [
+                {
+                    track_type: 'tag',
+                    name : 'Tags',
+                    height: '30'
+                },
+                {
+                    track_type: 'image',
+                    name : 'Images',
+                    height: '30'
+                }
+            ]
+        });
+    }
 
-    var images = [
-        {
-            start: new Date(2011, 1,1), end: new Date(2011,1,2),
-            url: 'http://svg-edit.googlecode.com/svn/branches/2.5.1/editor/images/logo.png',
-            width: 37, height: 59
-        }
-    ]
+
+
+    function init_tracks (x, y, group, emitter, callback) {
+        get_tracks(function(err, tracks){
+            var objectified = [];
+            _.each(tracks.rows, function(track){
+                switch (track.track_type) {
+                    case 'audio'     : objectified.push(new AudioTrack(track, x, y, group, emitter)); break;
+                    case 'image'     : objectified.push(new ImageTrack(track, x, y, group, emitter)); break;
+                    case 'journal'   : objectified.push(new JournalTrack(track, x, y, group, emitter)); break;
+                    case 'scrapbook' : objectified.push(new ScrapbookTrack(track, x, y, group, emitter)); break;
+                    case 'service'   : objectified.push(new ServiceTrack(track, x, y, group, emitter)); break;
+                    case 'tag'       : objectified.push(new TagTrack(track, x, y, group, emitter)); break;
+                    default : console.log('unknown track type', track);
+                }
+            })
+            callback(null, objectified);
+        });
+    }
+
+    function draw_tracks(tracks) {
+        _.each(tracks, function(track){
+            track.draw();
+        })
+    }
+
+
+
 
     function createTimeline(initialDate, scale_info) {
         var margin = {top: 0, right: 0, bottom: 12, left: 24},
@@ -108,15 +152,15 @@ define('js/timeline',[
             .append("clipPath")
             .attr("id", "clip")
             .append("rect")
-                  .attr("width", width)
-                  .attr("height", height);
+            .attr("width", width)
+            .attr("height", height);
 
         svg.append("rect")
             .attr("class", "bg")
             .attr("width", width)
             .attr("height", height);
 
-        var tags =  svg.append("g")
+        var track_space =  svg.append("g")
             //.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
 
@@ -131,65 +175,19 @@ define('js/timeline',[
                 .style("stroke", "rgb(6,120,155)");
 
 
-        /*
-        var tag_area = d3.svg.area()
 
-                .x1(function(d) { return x(d.start);   })
-                .x0(function(d) { return x(d.end);  })
-                .y1(20)
-                .y0(150);
-
-        */
-
-
-
-
-        tags.append("g")
+        /**
+         * The Axis
+         */
+        track_space.append("g")
             .attr("class", "x axis")
             .attr("transform", "translate(0," + height + ")")
             .call(xAxis);
 
-        tags.append("g")
+        track_space.append("g")
             .attr("class", "y axis")
             .call(yAxis);
 
-
-
-
-        var tag_space = tags.append("g").attr("clip-path", "url(#clip)");
-
-        tag_space.selectAll("rect")
-        .data(data)
-        .enter().append("rect")
-        .attr("class", "tag")
-            .attr("x", function(d) {  return x(d.start); })
-            .attr("y", 20)
-            .attr("height",50)
-            .attr("width", function(d) {  return x(d.end) - x(d.start); })
-            .attr("fill", "#2d578b")
-            .on('click', function(d,i){      $(this).addClass('hover')   })
-            .on('mouseover', function(d,i){  $(this).addClass('hover')   })
-            .on('mouseout', function(d,i){  $(this).removeClass('hover')   });
-
-        var scrapbook_space = tags.append("g").attr("clip-path", "url(#clip)");
-
-        var sc_width = function(d) {
-            var date_width =  x(d.end) - x(d.start);
-            var img_width = d.width;
-            if(img_width < date_width) return img_width;
-            return date_width;
-        }
-
-
-        scrapbook_space.selectAll('image')
-                .data(images)
-                .enter().append('image')
-                .attr('class', 'scrap')
-                .attr('x', function(d) {  return x(d.start); })
-                .attr('y', 150)
-                .attr('width', sc_width)
-                .attr('height', function(d) {return d.height })
-                .attr('xlink:href', function(d) {return d.url})
 
 
 
@@ -201,7 +199,7 @@ define('js/timeline',[
                     store.set('timeline_current', { date : date, duration: duration })
                 });
 
-                var duration = getDuration(x.domain());
+                var duration = scales.getDuration(x.domain());
                 history.replaceState({}, date, "#/timeline/" + date + '/' + duration);
 
 
@@ -215,17 +213,20 @@ define('js/timeline',[
             var range = x.domain();
 
 
-            tags.select(".x.axis").call(xAxis);
-            tags.select(".y.axis").call(yAxis);
+            track_space.select(".x.axis").call(xAxis);
+            track_space.select(".y.axis").call(yAxis);
 
             scrubber_date = new Date( d3.mean(range, function(d){ return d.getTime()  }));
             update_url_hash();
-            tag_space.selectAll("rect").attr("x", function(d) {  return x(d.start); }).attr("width", function(d) {  return x(d.end) - x(d.start); });
-            scrapbook_space.selectAll('image').attr("x", function(d) {  return x(d.start); }).attr("width", sc_width);
 
-
-
+            track_emitter.emit('zoom', x);
         }
+
+
+        init_tracks(x, y, track_space, track_emitter, function(err, tracks){
+           draw_tracks(tracks);
+        });
+
 
 
 
@@ -240,24 +241,24 @@ define('js/timeline',[
 
 
         function zoomButton(middle_date, to_scale) {
-            redrawToDates(getToScaleInfo(middle_date, to_scale));
+            redrawToDates(scales.getToScaleInfo(middle_date, to_scale));
         }
 
 
         $(function() {
             $('.btn.zoom_in').on('click',function(){
                 var current_domain = x.domain();
-                var scale = getScale(current_domain);
-                var middle_date = getMeanDate(current_domain);
-                zoomButton(middle_date, zoomInSingleToScale(middle_date, scale));
+                var scale = scales.getScale(current_domain);
+                var middle_date = scales.getMeanDate(current_domain);
+                zoomButton(middle_date, scales.zoomInSingleToScale(middle_date, scale));
 
 
             });
             $('.btn.zoom_out').on('click',function(){
                 var current_domain = x.domain();
-                var scale = getScale(current_domain);
-                var middle_date = getMeanDate(current_domain);
-                zoomButton(middle_date, zoomOutSingleToScale(middle_date, scale));
+                var scale = scales.getScale(current_domain);
+                var middle_date = scales.getMeanDate(current_domain);
+                zoomButton(middle_date, scales.zoomOutSingleToScale(middle_date, scale));
 
 
             });
@@ -268,81 +269,6 @@ define('js/timeline',[
     }
 
 
-    var scales = {
-       'second' : 1000
-    };
-    scales.minute = scales.second * 60;
-    scales.hour = scales.minute * 60;
-    scales.day  = scales.hour * 24;
-    scales.week = scales.day * 7;
-    scales.month = scales.day * 31;
-    scales.year = scales.month * 12;
-    scales.multi_year = scales.year * 100;
 
-
-
-    function getMeanDate(domain) {
-     return new Date( d3.mean(domain, function(d){ return d.getTime()  }))
-    }
-
-    function getDuration(domain) {
-        return domain[1].getTime() - domain[0].getTime()
-    }
-
-
-    function getScale(domain) {
-        var duration = getDuration(domain);
-        if (duration <= scales.minute) return scales.minute;
-        if (duration <= scales.hour) return scales.hour;
-        if (duration <= scales.day) return scales.day;
-        if (duration <= scales.week) return scales.week;
-        if (duration <= scales.month) return scales.month;
-        if (duration <= scales.year) return scales.year;
-        return scales.multi_year;
-    }
-
-    function getScaleExtent(scale) {
-        if (scale <= scales.minute) return [0.0000003, 6];
-        if (scale <= scales.hour) return [0.000003, 378];
-        if (scale <= scales.day) return [0.0004, 5000];
-        if (scale <= scales.week) return [0.0005, 60144];
-        if (scale <= scales.month) return [0.005, 221672];
-        if (scale <= scales.year) return [0.05, 3174442];
-        return [0.5, 325932957];
-    }
-
-
-    function zoomInSingleToScale(middle_date, from_scale)  {
-        if (from_scale == scales.multi_year) return scales.year;
-        if (from_scale == scales.year) return scales.month;
-        if (from_scale == scales.month) return scales.week;
-        if (from_scale == scales.week) return scales.day;
-        if (from_scale == scales.day) return scales.hour;
-        if (from_scale == scales.hour) return scales.minute;
-        if (from_scale == scales.minute) return scales.minute;
-
-    }
-
-    function zoomOutSingleToScale(middle_date, from_scale)  {
-        if (from_scale == scales.multi_year) return scales.multi_year;
-        if (from_scale == scales.year) return scales.multi_year;
-        if (from_scale == scales.month) return scales.year;
-        if (from_scale == scales.week) return scales.month;
-        if (from_scale == scales.day) return scales.week;
-        if (from_scale == scales.hour) return scales.day;
-        if (from_scale == scales.minute) return scales.hour;
-
-    }
-    function getToScaleInfo(middle_date, to_scale) {
-        var x = to_scale/2;
-        var left_date = new Date(middle_date.getTime() - x);
-        var right_date = new Date(middle_date.getTime() + x);
-        var scale_extent = getScaleExtent(to_scale);
-        return {
-            left_date : left_date,
-            right_date : right_date,
-            scale_extent : scale_extent
-        }
-    }
     return exports;
 })
