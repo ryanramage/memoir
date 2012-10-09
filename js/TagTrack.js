@@ -3,11 +3,11 @@
  * Date: 12-10-08
  * Time: 4:29 PM
  */
-define('js/TagTrack', ['js/Track', 'Class'], function (Track, Class) {
+define('js/TagTrack', ['js/Track', 'Class', 'jquery'], function (Track, Class, $) {
     var TagTrack = Class.design('TagTrack', {
         Extends: Track,
-        initialize : function(settings, x, y, group, emitter){
-            TagTrack.Super.call(this, settings, x, y, group, emitter);
+        initialize : function(settings, chart_details){
+            TagTrack.Super.call(this, settings, chart_details);
             this.data = [
                 { start: new Date(2011, 1,1), end: new Date(2011,1,2)},
                 { start: new Date(2011, 1,3), end: new Date(2011,1,4)}
@@ -24,11 +24,11 @@ define('js/TagTrack', ['js/Track', 'Class'], function (Track, Class) {
             .enter().append("rect")
             .attr("class", "tag")
                 .attr("x", function(d) {  return me.x(d.start); })
-                .attr("y", 20)
-                .attr("height",50)
+                .attr("y", me.settings.y + 1)
+                .attr("height",me.settings.height - 1)
                 .attr("width", function(d) {  return me.x(d.end) - me.x(d.start); })
                 .attr("fill", "#2d578b")
-                .on('click', function(d,i){      $(this).addClass('hover')   })
+                .on('click', function(d,i){   $(this).addClass('hover')   })
                 .on('mouseover', function(d,i){  $(this).addClass('hover')   })
                 .on('mouseout', function(d,i){  $(this).removeClass('hover')   });
         },

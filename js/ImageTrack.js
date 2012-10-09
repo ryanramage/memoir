@@ -8,8 +8,8 @@ define('js/ImageTrack', ['js/Track', 'Class'], function (Track, Class) {
 
     var ImageTrack =  Class.design('ImageTrack', {
         Extends: Track,
-        initialize : function(settings, x, y, group, emitter){
-            ImageTrack.Super.call(this, settings, x, y, group, emitter);
+        initialize : function(settings, chart_details){
+            ImageTrack.Super.call(this, settings, chart_details);
             this.images = [
                 {
                     start: new Date(2011, 1,1), end: new Date(2011,1,2),
@@ -27,7 +27,7 @@ define('js/ImageTrack', ['js/Track', 'Class'], function (Track, Class) {
                     .enter().append('image')
                     .attr('class', 'scrap')
                     .attr('x', function(d) {  return me.x(d.start); })
-                    .attr('y', 150)
+                    .attr('y', me.settings.y + 1)
                     .attr('width', function(d) {
                                 var date_width =  me.x(d.end) - me.x(d.start);
                                 var img_width = d.width;

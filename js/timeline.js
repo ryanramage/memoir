@@ -77,12 +77,14 @@ define('js/timeline',[
                 {
                     track_type: 'tag',
                     name : 'Tags',
-                    height: '30'
+                    y: 0,
+                    height: 30
                 },
                 {
                     track_type: 'image',
                     name : 'Images',
-                    height: '30'
+                    y: 31,
+                    height: 60
                 }
             ]
         });
@@ -90,17 +92,26 @@ define('js/timeline',[
 
 
 
-    function init_tracks (x, y, group, emitter, callback) {
+    function init_tracks (x, y, width, height, group, emitter, callback) {
         get_tracks(function(err, tracks){
             var objectified = [];
+
+            var chart_details = {
+                x : x,
+                y : y,
+                width : width,
+                height : height,
+                group : group,
+                emitter : emitter
+            }
             _.each(tracks.rows, function(track){
                 switch (track.track_type) {
-                    case 'audio'     : objectified.push(new AudioTrack(track, x, y, group, emitter)); break;
-                    case 'image'     : objectified.push(new ImageTrack(track, x, y, group, emitter)); break;
-                    case 'journal'   : objectified.push(new JournalTrack(track, x, y, group, emitter)); break;
-                    case 'scrapbook' : objectified.push(new ScrapbookTrack(track, x, y, group, emitter)); break;
-                    case 'service'   : objectified.push(new ServiceTrack(track, x, y, group, emitter)); break;
-                    case 'tag'       : objectified.push(new TagTrack(track, x, y, group, emitter)); break;
+                    case 'audio'     : objectified.push(new AudioTrack(track, chart_details)); break;
+                    case 'image'     : objectified.push(new ImageTrack(track, chart_details)); break;
+                    case 'journal'   : objectified.push(new JournalTrack(track, chart_details)); break;
+                    case 'scrapbook' : objectified.push(new ScrapbookTrack(track, chart_details)); break;
+                    case 'service'   : objectified.push(new ServiceTrack(track, chart_details)); break;
+                    case 'tag'       : objectified.push(new TagTrack(track, chart_details)); break;
                     default : console.log('unknown track type', track);
                 }
             })
@@ -223,7 +234,7 @@ define('js/timeline',[
         }
 
 
-        init_tracks(x, y, track_space, track_emitter, function(err, tracks){
+        init_tracks(x, y, width, height, track_space, track_emitter, function(err, tracks){
            draw_tracks(tracks);
         });
 
