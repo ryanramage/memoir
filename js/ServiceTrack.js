@@ -43,7 +43,7 @@ function (Track, Class, $, couchr, _, scales) {
                     .attr("x", function(d) { return me.x(new Date(d.doc.timestamp)); })
                     .attr("y", me.settings.y + 1)
                     .attr("height",me.settings.height - 1)
-                    .attr("width", "2")
+                    .attr("width", "4")
                     .attr("fill", "#2d578b")
 
 
@@ -59,8 +59,11 @@ function (Track, Class, $, couchr, _, scales) {
                     placement: 'bottom',
                     trigger : 'hover',
                     delay: { show: 500, hide: 2000 },
+                    title : function() {
+                        return '<span class="lifestream-' + me.settings.service_name + ' timeline-service-popup-icon"></span>' + this.__data__.doc.config.user;
+                    },
                     content : function(){
-                        return this.__data__.doc.html
+                        return  this.__data__.doc.html
                     }
                 });
 
