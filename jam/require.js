@@ -2048,6 +2048,11 @@ var jam = {
             "main": "./lib/async"
         },
         {
+            "name": "bird-down",
+            "location": "jam/bird-down",
+            "main": "bird-down.js"
+        },
+        {
             "name": "bootstrap",
             "location": "jam/bootstrap"
         },
@@ -2117,6 +2122,11 @@ var jam = {
             "main": "./lib/marked.js"
         },
         {
+            "name": "marked-bird-down",
+            "location": "jam/marked-bird-down",
+            "main": "./lib/marked.js"
+        },
+        {
             "name": "moment",
             "location": "jam/moment",
             "main": "moment.js"
@@ -2130,6 +2140,11 @@ var jam = {
             "name": "text",
             "location": "jam/text",
             "main": "text.js"
+        },
+        {
+            "name": "twitter-text",
+            "location": "jam/twitter-text",
+            "main": "./twitter-text.js"
         },
         {
             "name": "underscore",

@@ -4,6 +4,7 @@ define('js/quick', [
     'async',
     'handlebars',
     'couchr',
+    'bird-down',
     'EpicEditor',
     'moment',
     'jquery-lifestream',
@@ -13,7 +14,7 @@ define('js/quick', [
     'hbt!templates/quick_people_row',
     'hbt!templates/quick_journal',
     'hbt!templates/quick_lifestream'
-], function ($, _, async, handlebars, couchr, EpicEditor, moment, lifestream, base_t, tag_t, people_t, people_row_t, journal_t, lifestream_t) {
+], function ($, _, async, handlebars, couchr, birddown, EpicEditor, moment, lifestream, base_t, tag_t, people_t, people_row_t, journal_t, lifestream_t) {
 
     var exports = {};
     var selector = '.main'
@@ -68,7 +69,22 @@ define('js/quick', [
 
         var date_str = moment().format('LL');
         $(selector).find('.quick_form').html(journal_t({date_str : date_str}));
-        var editor = new EpicEditor().load();
+
+        var bd = new birddown({
+            doublebrackets : true,
+            doublebracketsUrlBase : '#/topics/',
+            hashtagUrlBase : "#/topics/",
+            cashtagUrlBase : "https://twitter.com/#!/search?q=%24",
+            usernameUrlBase : "#/person/",
+            listUrlBase : "https://twitter.com/"
+        });
+        var parse = function(str){
+            return bd.parse(str);
+        }
+
+        var editor = new EpicEditor({
+            parser: parse
+        }).load();
     }
 
     exports.lifestream = function() {

@@ -1,0 +1,18 @@
+{
+  "name": "twitter-text"
+  , "description": "official twitter text linkification"
+  , "version": "1.5.0"
+  , "main": "./twitter-text.js"
+  , "homepage": "https://github.com/twitter/twitter-text-js"
+  , "author": "Twitter Inc."
+  , "repository": {
+    "type": "git"
+    , "url": "https://github.com/twitter/twitter-text-js.git"
+  }
+  , "jam" : {
+        "include": [
+              "README.md",
+              "twitter-text.js"
+        ]
+  }
+}
