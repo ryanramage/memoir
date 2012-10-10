@@ -3,7 +3,17 @@
  * Date: 12-10-08
  * Time: 11:50 AM
  */
-define('js/ServiceTrack', ['js/Track', 'Class', 'jquery','couchr', 'js/scales'], function (Track, Class, $, couchr, scales) {
+define('js/ServiceTrack', [
+    'js/Track',
+    'Class',
+    'jquery',
+    'couchr',
+    'underscore',
+    'js/scales',
+    'jam/bootstrap/js/bootstrap-tooltip.js',
+    'jam/bootstrap/js/bootstrap-popover.js'],
+
+function (Track, Class, $, couchr, _, scales) {
     var ServiceTrack =  Class.design('ServiceTrack', {
         Extends: Track,
         initialize : function(settings, chart_details){
@@ -12,25 +22,53 @@ define('js/ServiceTrack', ['js/Track', 'Class', 'jquery','couchr', 'js/scales'],
 
             me.getEntries = function(callback) {
                 var domain = me.chart_details.x.domain();
+
+
+                // TODO - depending on scale, should limit the amount of data coming back
                 var query = {
                     startkey : [settings.service_name, domain[0].getTime()],
                     endkey : [settings.service_name, domain[1].getTime()],
                     include_docs : true
                 }
-                couchr.get('_ddoc/_view/service_by_service_and_date', query, me.drawEntries )
+                couchr.get('_ddoc/_view/service_by_service_and_date', query, callback )
             }
 
             me.drawEntries = function(err, results) {
-                me.space.selectAll("rect")
-                           .data(results.rows)
-                           .enter().append("rect")
-                           .attr("class", "tag")
-                               .attr("x", function(d) { return me.x(new Date(d.doc.timestamp)); })
-                               .attr("y", me.settings.y + 1)
-                               .attr("height",me.settings.height - 1)
-                               .attr("width", "2")
-                               .attr("fill", "#2d578b")
+                var rect = me.space.selectAll("rect")
+                    .data(results.rows,  function(d) { return d.id; })
+
+                //enter
+                rect.enter().append("rect")
+                    .attr("class", "service-tag")
+                    .attr("x", function(d) { return me.x(new Date(d.doc.timestamp)); })
+                    .attr("y", me.settings.y + 1)
+                    .attr("height",me.settings.height - 1)
+                    .attr("width", "2")
+                    .attr("fill", "#2d578b")
+
+
+                //update
+                rect.attr("x", function(d) { return me.x(new Date(d.doc.timestamp)); })
+
+                // delete
+                rect.exit()
+                    .remove();
+
+
+                $('svg rect.service-tag').popover({
+                    placement: 'bottom',
+                    trigger : 'hover',
+                    delay: { show: 500, hide: 2000 },
+                    content : function(){
+                        return this.__data__.doc.html
+                    }
+                });
+
             }
+
+            me.drawEntriesDebounced = _.debounce(function(){
+                me.getEntries(me.drawEntries);
+            }, 400);
 
         },
         draw: function() {
@@ -42,16 +80,14 @@ define('js/ServiceTrack', ['js/Track', 'Class', 'jquery','couchr', 'js/scales'],
 
             this.icon.css('top', this.settings.y + 'px');
             this.icon.appendTo(this.chart_details.$gutter);
-            this.getEntries(function(err, results){
-                console.log(results);
-            })
+            this.getEntries(this.drawEntries);
 
         },
         zoom: function(x_domain) {
             ServiceTrack.Super.prototype.zoom.call(this, x_domain);
             var me = this;
             me.space.selectAll("rect").attr("x", function(d) { return me.x(new Date(d.doc.timestamp)); });
-
+            me.drawEntriesDebounced();
         }
     })
     return ServiceTrack;
