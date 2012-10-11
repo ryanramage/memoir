@@ -10,6 +10,7 @@ exports.rewrites = [
     { "from": "_ddoc/*" , "to"  : "*"},
     { "description": "Access to the main CouchDB API", "from": "_couchdb" , "to"  : "../../.."},
     { "from": "_couchdb/*" , "to"  : "../../../*"},
+    {from : '_journal/:date', to : '../../:date'},
     {from: '/', to: 'index.html'},
     {from:"/tray.jnlp", to:'_show/tray.jnlp'},
     {from: '/*', to: '*'}

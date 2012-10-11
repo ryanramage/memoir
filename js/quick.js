@@ -99,7 +99,9 @@ define('js/quick', [
        range.insertNode(document.createTextNode(postfix));
    }
 
-
+    function ensureJournalFields (doc) {
+        if (!doc.type) doc.type = 'journal';
+    }
 
 
     exports.journal = function () {
@@ -107,6 +109,8 @@ define('js/quick', [
 
         var date_str = moment().format('LL');
         $(selector).find('.quick_form').html(journal_t({date_str : date_str}));
+
+
 
         var bd = new birddown({
             doublebrackets : true,
@@ -116,8 +120,9 @@ define('js/quick', [
             usernameUrlBase : "#/person/",
             listUrlBase : "https://twitter.com/"
         });
+        var reference_sheet_json;
         var parse = function(str){
-            return bd.parse(str);
+            return bd.parse(str  + reference.generateReferenceSheetMarkdown(reference_sheet_json));
         }
 
         var editor = new EpicEditor({
@@ -125,18 +130,44 @@ define('js/quick', [
             focusOnLoad : true
         }).load();
 
-        var query = {
+        var timeline_query = {
             startkey: moment().sod().valueOf(),
             endkey: moment().eod().valueOf(),
             include_docs: true
         }
 
-        couchr.get('_ddoc/_view/timeline_items', query, function(err, resp){
-            $(selector).find('.references').html(reference.createReferenceSheet(resp));
+        var journal_query = {
+            date : moment().format("YYYY-MM-DD")
+        }
+
+
+        async.parallel({
+            timeline : function(cb) {
+                couchr.get('_ddoc/_view/timeline_items', timeline_query, function(err, resp, req){
+                    cb(err, resp); // we do this b/c we dont want the req in the data object
+                });
+            },
+            journal : function(cb) {
+                couchr.get('_journal/' + moment().format("YYYY-MM-DD"), function(err, doc){
+                    if (err) return cb(null); // no journal found, set null
+                    return cb(null,doc);
+                });
+            }
+        }, function(err, data){
+            var reference_sheet = reference.createReferenceSheet(data);
+            reference_sheet_json = reference_sheet.references;
+            if (reference_sheet.updated) {
+                ensureJournalFields(reference_sheet.doc);
+                couchr.put('_journal/' + moment().format("YYYY-MM-DD"), reference_sheet.doc, function(err, resp){
+                    console.log(err, resp);
+                });
+            }
+
+            $(selector).find('.references').html(reference_sheet.html);
             $('button.cite').on('click',function(){
                 cite($(this), editor);
             });
-        })
+        });
     }
 
     exports.lifestream = function() {
