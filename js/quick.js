@@ -5,6 +5,7 @@ define('js/quick', [
     'handlebars',
     'couchr',
     'bird-down',
+    'js/reference',
     'EpicEditor',
     'moment',
     'jquery-lifestream',
@@ -14,7 +15,7 @@ define('js/quick', [
     'hbt!templates/quick_people_row',
     'hbt!templates/quick_journal',
     'hbt!templates/quick_lifestream'
-], function ($, _, async, handlebars, couchr, birddown, EpicEditor, moment, lifestream, base_t, tag_t, people_t, people_row_t, journal_t, lifestream_t) {
+], function ($, _, async, handlebars, couchr, birddown, reference, EpicEditor, moment, lifestream, base_t, tag_t, people_t, people_row_t, journal_t, lifestream_t) {
 
     var exports = {};
     var selector = '.main'
@@ -83,8 +84,22 @@ define('js/quick', [
         }
 
         var editor = new EpicEditor({
-            parser: parse
+            parser: parse,
+            focusOnLoad : true
         }).load();
+
+        var query = {
+            startkey: moment().sod().valueOf(),
+            endkey: moment().eod().valueOf(),
+            include_docs: true
+        }
+
+        couchr.get('_ddoc/_view/timeline_items', query, function(err, resp){
+            $(selector).find('.references').html(reference.createReferenceSheet(resp));
+        })
+
+
+
     }
 
     exports.lifestream = function() {
@@ -130,6 +145,7 @@ define('js/quick', [
             if (docs.length > 0){
                 couchr.post('_db/_bulk_docs', {docs: docs}, function(err, resp){
                     console.log(err, resp);
+
                 });
             }
 

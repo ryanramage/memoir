@@ -2150,6 +2150,11 @@ var jam = {
             "name": "underscore",
             "location": "jam/underscore",
             "main": "underscore.js"
+        },
+        {
+            "name": "underscore.string",
+            "location": "jam/underscore.string",
+            "main": "./lib/underscore.string"
         }
     ],
     "version": "0.2.6",
