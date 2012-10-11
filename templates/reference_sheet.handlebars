@@ -1,14 +1,18 @@
-{{#each this}}
 <ol>
-         <li class="entry">
-             <span class="index">{{index}}.</span>
+{{#each this}}
 
+         <li class="entry">
              {{#if icon_class}}
                 <div class="{{icon_class}} service-icon"></div>
              {{/if}}
 
              {{{html}}}
+
+             <span class="date">[{{ref_date}}]</span>
+
+
              <button class="btn btn-mini cite" data-text="{{textDesc}}" data-index="{{index}}" data-href="{{href}}">Cite</button>
          </li>
-</ol>
+
 {{/each}}
+</ol>

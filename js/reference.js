@@ -3,7 +3,7 @@
  * Date: 12-10-10
  * Time: 5:03 PM
  */
-define('js/reference', ['underscore', 'underscore.string', 'hbt!templates/reference_sheet'], function (_, _s, template) {
+define('js/reference', ['underscore', 'underscore.string', 'moment', 'hbt!templates/reference_sheet'], function (_, _s, moment, template) {
     var exports = {};
 
 
@@ -30,6 +30,7 @@ define('js/reference', ['underscore', 'underscore.string', 'hbt!templates/refere
            row.html = exports.getHtml(row.doc);
            row.textDesc = exports.getTextDesc(row.doc);
            row.icon_class = exports.getIconClass(row.doc);
+           row.ref_date = moment(row.key).format("h:mm:ss a");
            row.index = i++;
            return row;
         });
