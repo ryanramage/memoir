@@ -65,6 +65,43 @@ define('js/quick', [
         });
     }
 
+
+   function cite($btn, editor) {
+       var text = $btn.data('text');
+       var index = $btn.data('index');
+
+       // see http://epiceditor-demos.herokuapp.com/
+       var doc = editor.editorIframeDocument;
+       var selection = editor.editorIframeDocument.getSelection();
+       //console.log(selection);
+       if (selection.rangeCount === 0) {
+           return;
+       }
+       var range = selection.getRangeAt(0);
+
+       var noTextSelected = (range.endOffset === range.startOffset);
+
+       var prefix = '[';
+       var postfix = "][" + index + "]";
+
+       if (noTextSelected) {
+           prefix += text;
+       }
+
+       // add the prefix
+       var range = selection.getRangeAt(0);
+       range.insertNode(document.createTextNode(prefix));
+       range.collapse(false);
+
+       // And the postfix
+       selection.removeAllRanges();
+       selection.addRange(range);
+       range.insertNode(document.createTextNode(postfix));
+   }
+
+
+
+
     exports.journal = function () {
         showNav('journal');
 
@@ -96,10 +133,10 @@ define('js/quick', [
 
         couchr.get('_ddoc/_view/timeline_items', query, function(err, resp){
             $(selector).find('.references').html(reference.createReferenceSheet(resp));
+            $('button.cite').on('click',function(){
+                cite($(this), editor);
+            });
         })
-
-
-
     }
 
     exports.lifestream = function() {

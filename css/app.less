@@ -95,20 +95,33 @@ ul.lifestream {
   height: 400px;
 }
 
-.references .section {
-  float: left;
-  margin-right: 10px;
-  padding: 3px 10px;
-  border: 1px solid @grayLighter;
-  border-radius: 5px;
+.references {
+  -moz-column-width: 30em;
+  -webkit-column-width: 30em;
+  column-width: 30em;
 }
 
-.references .section h4 {
-  margin: 10px 0;
+.references ol li {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
 }
 
-.references .section .entry {
+
+.references  .entry {
   margin-bottom: 4px;
+  break-inside: avoid
 }
 
 
+
+.references .entry .index {
+  margin-right: 2px;
+}
+
+.references .service-icon {
+  display: inline-block;
+  margin-right: 2px;
+  width: 16px;
+  height: 16px;
+}

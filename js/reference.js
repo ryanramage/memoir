@@ -15,16 +15,24 @@ define('js/reference', ['underscore', 'underscore.string', 'hbt!templates/refere
         return _s.stripTags(exports.getHtml(doc));
     }
 
+    exports.getIconClass = function(doc) {
+        if (doc.type === 'lifestream.service') return 'lifestream-' +  doc.config.service ;
+        return null;
+    }
+
+    exports.getHref = function(doc) {
+
+    }
 
     exports.createReferenceSheet = function(results) {
         var i = 1;
         var list = _.map(results.rows, function(row){
            row.html = exports.getHtml(row.doc);
            row.textDesc = exports.getTextDesc(row.doc);
+           row.icon_class = exports.getIconClass(row.doc);
            row.index = i++;
            return row;
         });
-        console.log(list);
         return template(list);
     }
     return exports;
