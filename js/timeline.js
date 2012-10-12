@@ -36,6 +36,7 @@ define('js/timeline',[
         options.emitter.emit('section', 'timeline');
         var initialDate = date_utils.parseDate(textDate);
         var scale_info = scales.getToScaleInfo(initialDate, scales.week);
+        console.log(initialDate, scale_info);
         createTimeline(initialDate, scale_info);
     }
 

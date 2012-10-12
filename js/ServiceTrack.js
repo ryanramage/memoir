@@ -10,8 +10,7 @@ define('js/ServiceTrack', [
     'couchr',
     'underscore',
     'js/scales',
-    'jam/bootstrap/js/bootstrap-tooltip.js',
-    'jam/bootstrap/js/bootstrap-popover.js'],
+],
 
 function (Track, Class, $, couchr, _, scales) {
     var ServiceTrack =  Class.design('ServiceTrack', {

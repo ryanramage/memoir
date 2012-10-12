@@ -9,6 +9,15 @@ css/app.css
 jam/require.js
 /dashboard/_design/dashboard/_rewrite/static/js/topbar.js
 /dashboard/_design/dashboard/_rewrite/_img/dashboard_grey.png
+/dashboard/_design/dashboard/_rewrite/_img/dashboard.png
+img/glyphicons-halflings.png
+jam/jquery-lifestream/css/lifestream.css
+jam/EpicEditor/epiceditor/themes/base/epiceditor.css
+jam/EpicEditor/epiceditor/themes/editor/epic-dark.css
+jam/EpicEditor/epiceditor/themes/preview/github.css
+jam/EpicEditor/epiceditor/images/edit.png
+jam/EpicEditor/epiceditor/images/preview.png
+jam/EpicEditor/epiceditor/images/fullscreen.png
 
 NETWORK:
 *

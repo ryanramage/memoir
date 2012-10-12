@@ -30,7 +30,25 @@
             "application.appcache"
         ],
     "jam" : {
-        "include" : ["js/app", "domReady"]
+        "include" : [
+            "js/app",
+            "js/AudioTrack",
+            "js/date_utils",
+            "js/ImageTrack",
+            "js/JournalTrack",
+            "js/position",
+            "js/quick",
+            "js/reference",
+            "js/scales",
+            "js/ScrapbookTrack",
+            "js/ServiceTrack",
+            "js/TagTrack",
+            "js/timeline",
+            "js/Track",
+            "domReady",
+            "jam/bootstrap/js/bootstrap-tooltip",
+            "jam/bootstrap/js/bootstrap-popover"
+        ]
     },
     "dependencies": {
         "modules": null,

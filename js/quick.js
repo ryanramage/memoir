@@ -127,7 +127,12 @@ define('js/quick', [
 
         var editor = new EpicEditor({
             parser: parse,
-            focusOnLoad : true
+            focusOnLoad : true,
+            file: {
+                name: 'epiceditor',
+                defaultContent: '',
+                autoSave: 1000
+            }
         }).load();
 
         var timeline_query = {
@@ -154,6 +159,11 @@ define('js/quick', [
                 });
             }
         }, function(err, data){
+
+            if (data.journal && data.journal.entry) {
+                editor.importFile('epiceditor',data.journal.entry);
+            }
+
             var reference_sheet = reference.createReferenceSheet(data);
             reference_sheet_json = reference_sheet.references;
             if (reference_sheet.updated) {
@@ -167,6 +177,14 @@ define('js/quick', [
             $('button.cite').on('click',function(){
                 cite($(this), editor);
             });
+
+            $('button.save').on('click', function(){
+                console.log('save journal');
+                couchr.put('_journal/' + moment().format("YYYY-MM-DD") + '/update', {entry : editor.exportFile() }, function(err, resp){
+                    console.log(err,resp);
+                });
+            });
+
         });
     }
 

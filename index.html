@@ -73,14 +73,18 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="jam/require.js"></script>
     <script>
-      require(['js/app', 'domReady', 'jquery'], function (app, domReady) {
+      require(['js/app', 'domReady', 'jquery'], function (app, domReady, $) {
+        window.$ = $;
         // the topbar needed jquery to be loaded.
         require(['/dashboard/_design/dashboard/_rewrite/static/js/topbar.js'], function(){});
         app.init();
-        domReady(app.on_dom_ready);
-        // the bootstrap jquery
-        require(['jam/bootstrap/js/bootstrap-tooltip.js', 'jam/bootstrap/js/bootstrap-popover.js'], function(){});
 
+        // the bootstrap jquery
+        require(['jam/bootstrap/js/bootstrap-tooltip.js'], function(){
+           require(['jam/bootstrap/js/bootstrap-popover.js'], function(){
+               domReady(app.on_dom_ready);
+           })
+        });
       });
     </script>
   </body>

@@ -2,6 +2,8 @@ var _ = require('underscore')._;
 
 exports.views = {};
 exports.shows = {};
+exports.updates = {};
+
 
 exports.rewrites = [
     { "description": "Access to this database" , "from": "_db" , "to"  : "../.." },
@@ -10,12 +12,23 @@ exports.rewrites = [
     { "from": "_ddoc/*" , "to"  : "*"},
     { "description": "Access to the main CouchDB API", "from": "_couchdb" , "to"  : "../../.."},
     { "from": "_couchdb/*" , "to"  : "../../../*"},
+    {from : '_journal/:date/update', to : '_update/journal/:date', method: "PUT"},
     {from : '_journal/:date', to : '../../:date'},
     {from: '/', to: 'index.html'},
     {from:"/tray.jnlp", to:'_show/tray.jnlp'},
     {from: '/*', to: '*'}
 
 ];
+
+
+exports.updates.journal = function(doc, req) {
+    var form = JSON.parse(req.body);
+    if (!form.entry)      return [null, "Provide an Entry"];
+    if (!doc) return [null, 'no journal to update'];
+    if (doc.type !== 'journal') return [null, 'Trying to update a non journal thing'];
+    doc.entry = form.entry;
+    return [doc, 'UPDATE SUCCESS'];
+}
 
 
 exports.views.service_by_date = {
