@@ -80,7 +80,7 @@
         app.init();
 
         // the bootstrap jquery
-        require(['jam/bootstrap/js/bootstrap-tooltip.js'], function(){
+        require(['jam/bootstrap/js/bootstrap-tooltip.js', 'jam/bootstrap/js/bootstrap-button.js'], function(){
            require(['jam/bootstrap/js/bootstrap-popover.js'], function(){
                domReady(app.on_dom_ready);
            })

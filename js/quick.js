@@ -99,6 +99,31 @@ define('js/quick', [
        range.insertNode(document.createTextNode(postfix));
    }
 
+    function markup(editor, prefix, postfix) {
+       // see http://epiceditor-demos.herokuapp.com/
+       var doc = editor.editorIframeDocument;
+       var selection = editor.editorIframeDocument.getSelection();
+       //console.log(selection);
+       if (selection.rangeCount === 0) {
+           return;
+       }
+       var range = selection.getRangeAt(0);
+
+       var noTextSelected = (range.endOffset === range.startOffset);
+
+       // add the prefix
+       var range = selection.getRangeAt(0);
+       range.insertNode(document.createTextNode(prefix));
+       range.collapse(false);
+
+       // And the postfix
+       selection.removeAllRanges();
+       selection.addRange(range);
+       range.insertNode(document.createTextNode(postfix));
+    }
+
+
+
     function ensureJournalFields (doc) {
         if (!doc.type) doc.type = 'journal';
     }
@@ -129,12 +154,19 @@ define('js/quick', [
         var editor = new EpicEditor({
             parser: parse,
             focusOnLoad : true,
+            clientSideStorage: false,
             file: {
                 name: save_date_str,
                 defaultContent: '',
                 autoSave: 1000
             }
         }).load();
+
+        editor.on('update', function(){
+            // feels dirty, show state.
+            $('button.save').removeAttr("disabled").removeClass('disabled');
+        })
+
 
         var timeline_query = {
             startkey: moment().sod().valueOf(),
@@ -178,11 +210,27 @@ define('js/quick', [
             $('button.cite').on('click',function(){
                 cite($(this), editor);
             });
+            $('button.bold').on('click', function(){
+                markup(editor, '**', '**');
+            });
+            $('button.italic').on('click', function(){
+                markup(editor, '_', '_');
+            });
 
             $('button.save').on('click', function(){
-                console.log('save journal');
+                $('button.save').button('loading');
                 couchr.put('_journal/' + save_date_str + '/update', {entry : editor.exportFile() }, function(err, resp){
+                    //editor.save();
                     console.log(err,resp);
+
+                    $('button.save').button('reset');
+                    setTimeout(function(){
+                        $('button.save').attr('disabled', 'disabled').addClass('disabled');
+                    }, 200);
+
+
+
+
                 });
             });
 
