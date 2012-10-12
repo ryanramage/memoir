@@ -108,6 +108,7 @@ define('js/quick', [
         showNav('journal');
 
         var date_str = moment().format('LL');
+        var save_date_str = moment().format("YYYY-MM-DD");
         $(selector).find('.quick_form').html(journal_t({date_str : date_str}));
 
 
@@ -129,7 +130,7 @@ define('js/quick', [
             parser: parse,
             focusOnLoad : true,
             file: {
-                name: 'epiceditor',
+                name: save_date_str,
                 defaultContent: '',
                 autoSave: 1000
             }
@@ -142,7 +143,7 @@ define('js/quick', [
         }
 
         var journal_query = {
-            date : moment().format("YYYY-MM-DD")
+            date : save_date_str
         }
 
 
@@ -153,7 +154,7 @@ define('js/quick', [
                 });
             },
             journal : function(cb) {
-                couchr.get('_journal/' + moment().format("YYYY-MM-DD"), function(err, doc){
+                couchr.get('_journal/' + save_date_str, function(err, doc){
                     if (err) return cb(null); // no journal found, set null
                     return cb(null,doc);
                 });
@@ -168,7 +169,7 @@ define('js/quick', [
             reference_sheet_json = reference_sheet.references;
             if (reference_sheet.updated) {
                 ensureJournalFields(reference_sheet.doc);
-                couchr.put('_journal/' + moment().format("YYYY-MM-DD"), reference_sheet.doc, function(err, resp){
+                couchr.put('_journal/' + save_date_str, reference_sheet.doc, function(err, resp){
                     console.log(err, resp);
                 });
             }
@@ -180,7 +181,7 @@ define('js/quick', [
 
             $('button.save').on('click', function(){
                 console.log('save journal');
-                couchr.put('_journal/' + moment().format("YYYY-MM-DD") + '/update', {entry : editor.exportFile() }, function(err, resp){
+                couchr.put('_journal/' + save_date_str + '/update', {entry : editor.exportFile() }, function(err, resp){
                     console.log(err,resp);
                 });
             });
