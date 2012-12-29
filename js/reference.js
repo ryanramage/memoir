@@ -28,6 +28,7 @@ define('js/reference', [
     }
 
     exports.getHref = function(doc) {
+        if (doc.type === 'lifestream.service') return doc.url;
         // for now
         return '#/timeline/' + date_utils.stringifyDate(doc.timestamp);
     }

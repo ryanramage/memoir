@@ -6,7 +6,7 @@
     "url": "https://github.com/eckoit/my-path",
     "categories": ["productivity", ""],
     "flattr_user_id" : "eckoit",
-    "attachments": ["css", "img", "jam", "js",  "index.html", "application.appcache", "templates"],
+    "attachments": ["css", "img", "jam", "js",  "index.html", "application.appcache", "templates", "webstart"],
     "modules": "couch",
     "load": "couch/ddoc",
 

@@ -90,16 +90,22 @@ define('js/timeline',[
                     height: 60
                 },
                 {
+                    track_type: 'audio',
+                    name : 'Audio',
+                    y: 91,
+                    height: 30
+                },                
+                {
                     track_type: 'service',
                     name : 'Ryan Github',
-                    y: 91,
+                    y: 121,
                     height: 16,
                     service_name: 'github'
                 },
                 {
                     track_type: 'service',
                     name : 'Eckoit',
-                    y: 108,
+                    y: 138,
                     height: 16,
                     service_name: 'twitter'
                 }
