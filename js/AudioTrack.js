@@ -43,6 +43,7 @@ function (Track, Class, couchr, _, scales) {
 
                 var centre_date = scales.getMeanDate(me.x.domain());
                 var centre_time = centre_date.getTime();
+                var centre_audio = null;
 
                 //enter
                 rect.enter().append("rect")
@@ -61,28 +62,30 @@ function (Track, Class, couchr, _, scales) {
                 rect.attr("x", function(d) { return me.x(new Date(d.value.start)); })
                     .attr("width", function(d) { return   (me.x(new Date(d.value.end )) - me.x(new Date(d.value.start))) || 1 ;}   )
                     .attr("class", function(d) {  
-                        if ((d.value.start <= centre_time) && (centre_time <= d.value.end)) return 'audio-tag-center ';
+                        if ((d.value.start <= centre_time) && (centre_time <= d.value.end)) {
+                            centre_audio = d;
+                            return 'audio-tag-center '
+                        }
                         else return 'audio-tag';
                     });
 
                 // delete
                 rect.exit()
                     .remove();
+
+
+                //console.log(centre_time, centre_audio, results);
+
             }
             me.drawEntriesDebounced = _.debounce(function(){
                 me.getEntries(me.drawEntries);
-            }, 400);
+            }, 200);
 
         },
         draw: function() {
             AudioTrack.Super.prototype.draw.call(this);
-            this.space = this.chart_details.group.append("g").attr("clip-path", "url(#clip)");
-
-            // add a div to the right of this
-            this.icon = $('<div class="lifestream-github timeline-service-icon"></div>');
-            this.icon.css('top', this.settings.y + 'px');
-            this.icon.appendTo(this.chart_details.$gutter);
-            this.getEntries(this.drawEntries);            
+            this.space = this.chart_details.group.append("g").attr("clip-path", "url(#clip)"); 
+            this.getEntries(this.drawEntries);         
         },
         zoom: function(x_domain) {
             AudioTrack.Super.prototype.zoom.call(this, x_domain);

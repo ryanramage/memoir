@@ -6,6 +6,7 @@ define('js/timeline',[
     'd3',
     'store',
     'events',
+    'moment',
     'js/scales',
     'js/AudioTrack',
     'js/ImageTrack',
@@ -15,7 +16,7 @@ define('js/timeline',[
     'js/TagTrack',
     'js/date_utils',
     'hbt!templates/timeline'
-], function($, _, handlebars, couchr, d3, store, events, scales, AudioTrack, ImageTrack, JournalTrack, ScrapbookTrack, ServiceTrack, TagTrack, date_utils, timeline_t){
+], function($, _, handlebars, couchr, d3, store, events, moment, scales, AudioTrack, ImageTrack, JournalTrack, ScrapbookTrack, ServiceTrack, TagTrack, date_utils, timeline_t){
     var exports = {};
     var selector = '.main'
     var $canvas;
@@ -267,7 +268,7 @@ define('js/timeline',[
 
             scrubber_date = new Date( d3.mean(range, function(d){ return d.getTime()  }));
             update_url_hash();
-
+            exports.show_centre_date(scrubber_date);
             track_emitter.emit('zoom', x);
         }
 
@@ -277,7 +278,7 @@ define('js/timeline',[
         });
 
 
-
+        exports.show_centre_date(initialDate);
 
         function redrawToDates(scale_info) {
             x.domain([scale_info.left_date, scale_info.right_date]);
@@ -317,7 +318,10 @@ define('js/timeline',[
 
     }
 
-
+    exports.show_centre_date = function(date) {
+        var d_str = moment(date).format('ddd MMM D, h:mm:ss A YYYY');
+        $('.toolbar .centre-date').text(d_str);
+    }
 
     return exports;
 })
