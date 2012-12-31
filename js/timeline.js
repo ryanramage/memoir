@@ -15,13 +15,15 @@ define('js/timeline',[
     'js/ServiceTrack',
     'js/TagTrack',
     'js/date_utils',
+    'js/audio_player_controller',    
     'hbt!templates/timeline'
-], function($, _, handlebars, couchr, d3, store, events, moment, scales, AudioTrack, ImageTrack, JournalTrack, ScrapbookTrack, ServiceTrack, TagTrack, date_utils, timeline_t){
+], function($, _, handlebars, couchr, d3, store, events, moment, scales, AudioTrack, ImageTrack, JournalTrack, ScrapbookTrack, ServiceTrack, TagTrack, date_utils, audio_controller, timeline_t){
     var exports = {};
     var selector = '.main'
     var $canvas;
     var $gutter;
     var options;
+    var x, y, xAxis, yAxis, x_zoom, scrubber_date, track_space;
     // this is the main emitter that the tracks will use
     var track_emitter = new events.EventEmitter();
 
@@ -172,31 +174,35 @@ define('js/timeline',[
 
 
 
-        var x = d3.time.scale()
+        x = d3.time.scale()
             .domain([scale_info.left_date, scale_info.right_date])
             .range([0, width]);
 
-        var y = d3.scale.linear()
+        y = d3.scale.linear()
             .domain([0, height])
             .range([height, 0]);
 
-        var xAxis = d3.svg.axis()
+        xAxis = d3.svg.axis()
             .scale(x)
             .orient("bottom")
             .tickSize(-height);
 
-        var yAxis = d3.svg.axis()
+        yAxis = d3.svg.axis()
             .scale(y)
             .orient("left")
             .ticks(0)
             .tickSize(-width);
 
-        var x_zoom = d3.behavior.zoom();
+        x_zoom = d3.behavior.zoom();
 
         var svg = d3.select($canvas.get(0)).append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
-            .call(x_zoom.x(x).scaleExtent(scale_info.scale_extent).on("zoom", zoom));
+            .call(x_zoom.x(x).scaleExtent(scale_info.scale_extent).on("zoom", function(){
+                audio_controller.seeking();
+                zoom(true);
+                
+            }));
 
         svg.append("defs")
             .append("clipPath")
@@ -210,7 +216,7 @@ define('js/timeline',[
             .attr("width", width)
             .attr("height", height);
 
-        var track_space =  svg.append("g")
+        track_space =  svg.append("g")
             //.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
 
@@ -240,37 +246,10 @@ define('js/timeline',[
 
 
 
-
-        var scrubber_date;
-        var update_url_hash = function(){
-            if (_.isFunction(history.replaceState)) {
-                var date = date_utils.stringifyDate(scrubber_date);
-                _.defer(function(){
-                    store.set('timeline_current', { date : date, duration: duration })
-                });
-
-                var duration = scales.getDuration(x.domain());
-                history.replaceState({}, date, "#/timeline/" + date + '/' + duration);
+        
 
 
-            }
-        }
 
-        var update_url_hash = _.debounce(update_url_hash, 150);
-
-        function zoom() {
-
-            var range = x.domain();
-
-
-            track_space.select(".x.axis").call(xAxis);
-            track_space.select(".y.axis").call(yAxis);
-
-            scrubber_date = new Date( d3.mean(range, function(d){ return d.getTime()  }));
-            update_url_hash();
-            exports.show_centre_date(scrubber_date);
-            track_emitter.emit('zoom', x);
-        }
 
 
         init_tracks(x, y, width, height, track_space, track_emitter, $canvas, $gutter, function(err, tracks){
@@ -279,13 +258,6 @@ define('js/timeline',[
 
 
         exports.show_centre_date(initialDate);
-
-        function redrawToDates(scale_info) {
-            x.domain([scale_info.left_date, scale_info.right_date]);
-            zoom();
-            x_zoom.x(x);//.scaleExtent(scale_info.scale_extent);
-        }
-
 
 
 
@@ -318,8 +290,66 @@ define('js/timeline',[
 
     }
 
+    var update_url_hash_instant = function(){
+        if (_.isFunction(history.replaceState)) {
+            var date = date_utils.stringifyDate(scrubber_date);
+            var duration = scales.getDuration(x.domain());
+            _.defer(function(){
+                var duration = scales.getDuration(x.domain());
+                store.set('timeline_current', { date : date, duration: duration })
+            });
+            history.replaceState({}, date, "#/timeline/" + date + '/' + duration);
+        }
+    }
+
+    var update_url_hash = _.debounce(update_url_hash_instant, 150);
+
+    var play_audio = function() {
+        var range = x.domain();
+        audio_controller.play( new Date( d3.mean(range, function(d){ return d.getTime()  })));
+    }
+    var play_audio_debounced = _.debounce(play_audio, 150);
+
+    function zoom(play_audio) {
+        console.log('zoom', play_audio, new Date().getTime());
+
+        var range = x.domain();
+        track_space.select(".x.axis").call(xAxis);
+        track_space.select(".y.axis").call(yAxis);
+
+        scrubber_date = new Date( d3.mean(range, function(d){ return d.getTime()  }));
+        update_url_hash();
+        exports.show_centre_date(scrubber_date);
+        track_emitter.emit('zoom', x, false);
+        if (play_audio) {
+            play_audio_debounced();
+        }
+    }
+    function redrawToDates(scale_info) {
+        x.domain([scale_info.left_date, scale_info.right_date]);
+        
+        x_zoom.x(x);//.scaleExtent(scale_info.scale_extent);
+        //_.defer(zoom);
+        zoom();
+    }
+
+
+    audio_controller.get_emitter().on('progress', function(details){
+        var current_duration = scales.getDuration(x.domain());
+        var scale_info = scales.getToScaleInfo(details.date, current_duration);
+        x.domain([scale_info.left_date, scale_info.right_date]);            
+        //x_zoom.x(x);//.scaleExtent(scale_info.scale_extent);
+        var range = x.domain();
+        track_space.select(".x.axis").call(xAxis);
+        track_space.select(".y.axis").call(yAxis);
+
+        scrubber_date = new Date( d3.mean(range, function(d){ return d.getTime()  }));
+        update_url_hash_instant();
+        exports.show_centre_date(scrubber_date);
+        track_emitter.emit('zoom', x, true);
+    });
     exports.show_centre_date = function(date) {
-        var d_str = moment(date).format('ddd MMM D, h:mm:ss A YYYY');
+        var d_str = moment(date).format('ddd MMM D, h:mm:ss a, YYYY');
         $('.toolbar .centre-date').text(d_str);
     }
 

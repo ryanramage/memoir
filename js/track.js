@@ -14,8 +14,8 @@ define('js/Track', ['underscore', 'Class', 'd3'], function (_, Class, d3) {
             this.group = chart_details.group;
 
             var me = this;
-            this.chart_details.emitter.on('zoom', function(x_scale){
-                me.zoom.call(me, x_scale);
+            this.chart_details.emitter.on('zoom', function(x_scale, quick){
+                me.zoom.call(me, x_scale, quick);
             });
         },
 
@@ -32,7 +32,7 @@ define('js/Track', ['underscore', 'Class', 'd3'], function (_, Class, d3) {
 
 
         },
-        zoom : function(x_scale) {
+        zoom : function(x_scale, quick) {
             this.x = x_scale;
         }
     });

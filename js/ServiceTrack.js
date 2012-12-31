@@ -85,11 +85,11 @@ function (Track, Class, $, couchr, _, scales) {
             this.getEntries(this.drawEntries);
 
         },
-        zoom: function(x_domain) {
+        zoom: function(x_domain, quick) {
             ServiceTrack.Super.prototype.zoom.call(this, x_domain);
             var me = this;
             me.space.selectAll("rect").attr("x", function(d) { return me.x(new Date(d.doc.timestamp)); });
-            me.drawEntriesDebounced();
+            if (!quick) me.drawEntriesDebounced();
         }
     })
     return ServiceTrack;

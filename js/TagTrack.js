@@ -32,8 +32,8 @@ define('js/TagTrack', ['js/Track', 'Class', 'jquery'], function (Track, Class, $
                 .on('mouseover', function(d,i){  $(this).addClass('hover')   })
                 .on('mouseout', function(d,i){  $(this).removeClass('hover')   });
         },
-        zoom: function(x_domain) {
-            TagTrack.Super.prototype.zoom.call(this, x_domain);
+        zoom: function(x_domain, quick) {
+            TagTrack.Super.prototype.zoom.call(this, x_domain, quick);
             var me = this;
             me.space.selectAll("rect").attr("x", function(d) {  return me.x(d.start); }).attr("width", function(d) {  return me.x(d.end) - me.x(d.start); });
         }

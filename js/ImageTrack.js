@@ -37,7 +37,7 @@ define('js/ImageTrack', ['js/Track', 'Class'], function (Track, Class) {
                     .attr('height', function(d) {return d.height })
                     .attr('xlink:href', function(d) {return d.url})
         },
-        zoom: function(x_domain) {
+        zoom: function(x_domain, quick) {
             ImageTrack.Super.prototype.zoom.call(this, x_domain);
             var me = this;
             me.space.selectAll('image')

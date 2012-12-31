@@ -8,10 +8,11 @@ define([
     'Class', 
     'couchr',
     'underscore',
-    'js/scales'
+    'js/scales',
+    'js/audio_player_controller'
 ], 
 
-function (Track, Class, couchr, _, scales) {
+function (Track, Class, couchr, _, scales, audio_controller) {
     var AudioTrack = Class.design('AudioTrack', {
         Extends: Track,
         initialize : function(settings, chart_details){
@@ -21,20 +22,12 @@ function (Track, Class, couchr, _, scales) {
             me.getEntries = function(callback) {
                 var domain = me.chart_details.x.domain();
 
-                var startkey = domain[0].getTime();
+                var starttime  = domain[0].getTime();
+                var endtime = domain[1].getTime();
                 //var scale = scales.getScale(domain);
                 // if (scale == scales.minute) 
-
-                startkey -= (11*60*1000); // get 11 min earlier
-
-
                 // TODO - depending on scale, should limit the amount of data coming back
-                var query = {
-                    startkey : startkey,
-                    endkey : domain[1].getTime(),
-                    include_docs : false
-                }
-                couchr.get('_ddoc/_view/audio_by_time', query, callback )
+                audio_controller.get_playlist(starttime, endtime, callback);
             }
 
             me.drawEntries = function(err, results) {
@@ -54,13 +47,13 @@ function (Track, Class, couchr, _, scales) {
                     .attr("x", function(d) { return me.x(new Date(d.value.start)); })
                     .attr("y", me.settings.y + 1)
                     .attr("height",me.settings.height - 1)
-                    .attr("width", function(d) { return   (me.x(new Date(d.value.end )) - me.x(new Date(d.value.start))) || 1 ;}   )
+                    .attr("width", function(d) { return   (me.x(new Date(d.value.end + 1000 )) - me.x(new Date(d.value.start))) || 1 ;}   )
                     .attr("fill", "#2d578b")
 
 
                 //update
                 rect.attr("x", function(d) { return me.x(new Date(d.value.start)); })
-                    .attr("width", function(d) { return   (me.x(new Date(d.value.end )) - me.x(new Date(d.value.start))) || 1 ;}   )
+                    .attr("width", function(d) { return   (me.x(new Date(d.value.end + 1000 )) - me.x(new Date(d.value.start))) || 1 ;}   )
                     .attr("class", function(d) {  
                         if ((d.value.start <= centre_time) && (centre_time <= d.value.end)) {
                             centre_audio = d;
@@ -73,8 +66,14 @@ function (Track, Class, couchr, _, scales) {
                 rect.exit()
                     .remove();
 
+                if (centre_audio) {
+                    audio_controller.cache_playlist({
+                        playlist: results, 
+                        current_track: centre_audio,
+                        centre_time: centre_time
+                    });          
+                }
 
-                //console.log(centre_time, centre_audio, results);
 
             }
             me.drawEntriesDebounced = _.debounce(function(){
@@ -87,15 +86,14 @@ function (Track, Class, couchr, _, scales) {
             this.space = this.chart_details.group.append("g").attr("clip-path", "url(#clip)"); 
             this.getEntries(this.drawEntries);         
         },
-        zoom: function(x_domain) {
-            AudioTrack.Super.prototype.zoom.call(this, x_domain);
+        zoom: function(x_domain, quick) {
+            AudioTrack.Super.prototype.zoom.call(this, x_domain, quick);
             var me = this;
 
             me.space.selectAll("rect")
                 .attr("x", function(d) { return me.x(new Date(d.value.start)); })
-                .attr("width", function(d) { return   (me.x(new Date(d.value.end )) - me.x(new Date(d.value.start))) || 1 ;}   );
-            
-            me.drawEntriesDebounced();
+                .attr("width", function(d) { return   (me.x(new Date(d.value.end + 1000)) - me.x(new Date(d.value.start))) || 1 ;}   );
+            if (!quick) me.drawEntriesDebounced();
         }
     })
     return AudioTrack;
