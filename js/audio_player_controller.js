@@ -11,6 +11,10 @@ define(['underscore', 'couchr', 'events'], function(_, couchr, events){
         emitter = new events.EventEmitter();		
 
 
+    $player.on("timeupdate", function(details){
+    	throttled_update();
+    })
+
     exports.get_emitter = function() {
     	return emitter;
     }
@@ -38,6 +42,7 @@ define(['underscore', 'couchr', 'events'], function(_, couchr, events){
 
 	function _update() {
 		if (state != 'playing') return;
+		if (player.currentTime === 0) return;
 		var play_date = new Date(current_track.key + (player.currentTime * 1000));
 		var update = {
 			time: player.currentTime, 
@@ -47,18 +52,28 @@ define(['underscore', 'couchr', 'events'], function(_, couchr, events){
 
 	}
 
+	var throttled_update = _.throttle(_update, 500);
+
 
 	function _play() {
 		if (!timer) timer = setInterval(_update, 500);
 		state = 'playing';
 	}
 
+	function find_track_in_playlist(centre_time) {
+		return _.find(playlist.rows, function(d) {
+            if ((d.value.start <= centre_time) && (centre_time <= d.value.end)) return true;
+            else return false;
+		})
+	}
+
 
 	exports.play = function(date) {
 		if (!date) date = suggested_time;
-		if (!current_track) return;
-		// TODO - check that the playlist contains entries for the date.
 
+		//player.pause();
+		current_track = find_track_in_playlist(date.getTime());
+		if (!current_track) return;
 
         var media = _.keys(current_track.value.file)[0];
         var seekTime = (date - current_track.key) / 1000;

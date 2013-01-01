@@ -39,7 +39,6 @@ define('js/timeline',[
         options.emitter.emit('section', 'timeline');
         var initialDate = date_utils.parseDate(textDate);
         var scale_info = scales.getToScaleInfo(initialDate, scales.week);
-        console.log(initialDate, scale_info);
         createTimeline(initialDate, scale_info);
     }
 
@@ -306,13 +305,12 @@ define('js/timeline',[
 
     var play_audio = function() {
         var range = x.domain();
-        audio_controller.play( new Date( d3.mean(range, function(d){ return d.getTime()  })));
+        var play_date = new Date( d3.mean(range, function(d){ return d.getTime()  }));
+        audio_controller.play( play_date );
     }
-    var play_audio_debounced = _.debounce(play_audio, 150);
+    var play_audio_debounced = _.debounce(play_audio, 0);
 
     function zoom(play_audio) {
-        console.log('zoom', play_audio, new Date().getTime());
-
         var range = x.domain();
         track_space.select(".x.axis").call(xAxis);
         track_space.select(".y.axis").call(yAxis);

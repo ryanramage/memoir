@@ -90,9 +90,18 @@ function (Track, Class, couchr, _, scales, audio_controller) {
             AudioTrack.Super.prototype.zoom.call(this, x_domain, quick);
             var me = this;
 
+            var centre_date = scales.getMeanDate(me.x.domain());
+            var centre_time = centre_date.getTime();
             me.space.selectAll("rect")
                 .attr("x", function(d) { return me.x(new Date(d.value.start)); })
-                .attr("width", function(d) { return   (me.x(new Date(d.value.end + 1000)) - me.x(new Date(d.value.start))) || 1 ;}   );
+                .attr("width", function(d) { return   (me.x(new Date(d.value.end + 1000)) - me.x(new Date(d.value.start))) || 1 ;}   )
+                .attr("class", function(d) {  
+                        if ((d.value.start <= centre_time) && (centre_time <= d.value.end)) {
+                            return 'audio-tag-center '
+                        }
+                        else return 'audio-tag';
+                    });                
+
             if (!quick) me.drawEntriesDebounced();
         }
     })
