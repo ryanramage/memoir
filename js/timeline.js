@@ -298,10 +298,11 @@ define('js/timeline',[
                 store.set('timeline_current', { date : date, duration: duration })
             });
             history.replaceState({}, date, "#/timeline/" + date + '/' + duration);
+            exports.show_centre_date(date);
         }
     }
 
-    var update_url_hash = _.debounce(update_url_hash_instant, 150);
+    var update_url_hash = _.throttle(update_url_hash_instant, 900);
 
     var play_audio = function() {
         var range = x.domain();
@@ -342,8 +343,8 @@ define('js/timeline',[
         track_space.select(".y.axis").call(yAxis);
 
         scrubber_date = new Date( d3.mean(range, function(d){ return d.getTime()  }));
-        update_url_hash_instant();
-        exports.show_centre_date(scrubber_date);
+        update_url_hash();
+        
         track_emitter.emit('zoom', x, true);
     });
     exports.show_centre_date = function(date) {

@@ -90,6 +90,11 @@ var jam = {
             "main": "moment.js"
         },
         {
+            "name": "spin-js",
+            "location": "jam/spin-js",
+            "main": "spin.js"
+        },
+        {
             "name": "store",
             "location": "jam/store",
             "main": "store"
@@ -115,7 +120,7 @@ var jam = {
             "main": "./lib/underscore.string"
         }
     ],
-    "version": "0.2.6",
+    "version": "0.2.11",
     "shim": {
         "d3": {
             "exports": "d3"

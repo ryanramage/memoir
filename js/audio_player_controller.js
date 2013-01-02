@@ -13,6 +13,18 @@ define(['underscore', 'couchr', 'events'], function(_, couchr, events){
 
     $player.on("timeupdate", function(details){
     	throttled_update();
+    }).on("ended", function() {    	
+    	emitter.emit('ended');
+    	state = 'ended';
+    	console.log('ended', new Date().getTime());
+    }).on("play", function() {
+    	console.log('play', new Date().getTime());
+    }).on("seeking", function() {
+    	console.log('seeking', new Date().getTime());
+    	emitter.emit('seeking');
+    }).on("loadstart", function() {
+    	emitter.emit('loadstart');
+    	console.log('loadstart', new Date().getTime());
     })
 
     exports.get_emitter = function() {
