@@ -34,6 +34,9 @@ define('js/Track', ['underscore', 'Class', 'd3'], function (_, Class, d3) {
         },
         zoom : function(x_scale, quick) {
             this.x = x_scale;
+        },
+        distroy: function() {
+            
         }
     });
 });

@@ -19,7 +19,8 @@ define('js/timeline',[
     'hbt!templates/timeline'
 ], function($, _, handlebars, couchr, d3, store, events, moment, scales, AudioTrack, ImageTrack, JournalTrack, ScrapbookTrack, ServiceTrack, TagTrack, date_utils, audio_controller, timeline_t){
     var exports = {};
-    var selector = '.main'
+    var selector = '.main';
+    var current_tab;
     var $canvas;
     var $gutter;
     var options;
@@ -31,6 +32,10 @@ define('js/timeline',[
     exports.init = function (opts) {
         options = opts;
         selector = options.selector;
+        options.emitter.on('section', function(name){
+            console.log(name);
+            current_tab = name;
+        });
     }
 
 
@@ -284,6 +289,21 @@ define('js/timeline',[
 
             });
 
+            $('.to_now').on('click', function(){
+                var current_domain = x.domain(),
+                    now = new Date(),
+                    now_time = now.getTime();
+                    old_middle = scales.getMeanDate(current_domain).getTime(),
+                    left_offset= current_domain[0].getTime() - old_middle,
+                    right_middle= current_domain[1].getTime() - old_middle,
+                    scale = {
+                        left_date: new Date(now_time + left_offset),
+                        right_date: new Date(now_time + right_middle)
+                    };
+                redrawToDates(scale);
+            });
+
+
 
         });
 
@@ -291,6 +311,12 @@ define('js/timeline',[
 
     var update_url_hash_instant = function(){
         if (_.isFunction(history.replaceState)) {
+
+            if (current_tab !== 'timeline') return;
+
+            // one other saftey check that we are on the timeline tab
+            if ($('.timeline-widget').length === 0) return;
+            
             var date = date_utils.stringifyDate(scrubber_date);
             var duration = scales.getDuration(x.domain());
             _.defer(function(){
@@ -334,6 +360,11 @@ define('js/timeline',[
 
 
     audio_controller.get_emitter().on('progress', function(details){
+        if (current_tab !== 'timeline') return;
+
+        // one other saftey check that we are on the timeline tab
+        if ($('.timeline-widget').length === 0) return;
+
         var current_duration = scales.getDuration(x.domain());
         var scale_info = scales.getToScaleInfo(details.date, current_duration);
         x.domain([scale_info.left_date, scale_info.right_date]);            
