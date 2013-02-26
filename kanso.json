@@ -1,10 +1,10 @@
 {
     "name": "my-path",
     "version": "0.0.1",
-    "description": "A personal micro-tagging and diary application",
+    "description": "Your most acurate journal.",
     "long_description": "My Path lets you keep a history of things that happen to you, with an easy to use workflow. Here is how it works.\n\n - When something memorable happens, micro-tag it. We provide a way to tag the event with as little friction as possible.\n - Later that day, you can review your events and add extra information. The who, what, where.\n - We also provide a wiki like diary page to summarize the day.\n\n\nYou will be supprised by two things. First, The number of events that occur to you over the day. Second, how much you will be able to recall by such a system.",
     "url": "https://github.com/eckoit/my-path",
-    "categories": ["productivity", ""],
+    "categories": ["productivity", "journal"],
     "flattr_user_id" : "eckoit",
     "attachments": ["css", "img", "jam", "js",  "index.html", "application.appcache", "templates", "webstart"],
     "modules": "couch",
@@ -50,6 +50,34 @@
             "jam/bootstrap/js/bootstrap-popover"
         ]
     },
+    "settings_schema" : {
+        "description": "My-Path Settings",
+        "type": "object",
+        "properties": {
+            "Services": {
+                "title": "External Data Services",      
+                "type": "array",
+                "items": {        
+                    "type": "object",        
+                    "order": ["service", "user"],       
+                    "required": ["service", "user"],        
+                    "properties": {          
+                        "service": {            
+                            "type": "string",
+                            "enum" : ["bitbucket","bitly","blogger","citeulike","dailymotion","delicious","deviantart","dribbble",
+                                      "facebook_page","flickr","foomark","formspring","forrst","foursquare","gimmebar","github","googleplus",
+                                       "googlereader","hypem","instapaper","iusethis","lastfm","librarything","miso","mlkshk",
+                                       "pinboard","posterous","quora","reddit","rss","slideshare","snipplr","stackoverflow",
+                                       "tumblr","twitter","vimeo","wikipedia","wordpress","youtube","zotero"]  
+                        },          
+                        "user": {     
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    }, 
     "dependencies": {
         "modules": null,
         "attachments": null,

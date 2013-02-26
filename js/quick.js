@@ -235,55 +235,50 @@ define('js/quick', [
             });
 
         });
-    }
+    };
 
     exports.lifestream = function() {
         showNav('lifestream');
         $(selector).find('.quick_form').html(lifestream_t());
-        var settings = {
-            list:[
-              {
-                service: "github",
-                user: "ryanramage"
+
+        couchr.get('_ddoc/_show/app_settings', function(err, ddoc_settings) {
+          var settings = {
+            list: ddoc_settings.Services
+          };
+          console.log(settings);
+          async.parallel({
+              lifestream : function(cb){
+                  $('#lifestream').lifestream(settings, cb);
               },
-              {
-                service: "twitter",
-                user: "eckoit"
+              previous : function(cb) {
+                  couchr.get('_ddoc/_view/service_by_date', {limit: 200}, function(err, resp){
+                      var ids = {};
+                      _.each(resp.rows, function(row){
+                          var state = 'exists';
+                          if (row.value === true) state = 'ignore';
+                          ids[row.id] = state;
+                      });
+                      cb(null, ids);
+                  });
               }
-            ]
-        };
-        async.parallel({
-            lifestream : function(cb){
-                $('#lifestream').lifestream(settings, cb);
-            },
-            previous : function(cb) {
-                couchr.get('_ddoc/_view/service_by_date', {limit: 200}, function(err, resp){
-                    var ids = {};
-                    _.each(resp.rows, function(row){
-                        var state = 'exists';
-                        if (row.value === true) state = 'ignore';
-                        ids[row.id] = state;
-                    });
-                    cb(null, ids);
-                });
-            }
-        }, function(err, results){
-            var docs = [];
-            _.each(results.lifestream, function(item){
-                item._id = item.config.service + '-' + item.date.getTime();
-                if (results.previous[item._id]) return;
-                item.type = 'lifestream.service';
-                item.timestamp = item.date.getTime();
-                delete item.config._settings;
-                docs.push(item);
-            });
-            if (docs.length > 0){
-                couchr.post('_db/_bulk_docs', {docs: docs}, function(err, resp){
-                    console.log(err, resp);
+          }, function(err, results){
+              var docs = [];
+              _.each(results.lifestream, function(item){
+                  item._id = item.config.service + '-' + item.date.getTime();
+                  if (results.previous[item._id]) return;
+                  item.type = 'lifestream.service';
+                  item.timestamp = item.date.getTime();
+                  delete item.config._settings;
+                  docs.push(item);
+              });
+              if (docs.length > 0){
+                  couchr.post('_db/_bulk_docs', {docs: docs}, function(err, resp){
+                      console.log(err, resp);
 
-                });
-            }
+                  });
+              }
 
+          });
         });
     }
 

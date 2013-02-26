@@ -49,6 +49,15 @@ define('js/scales', ['d3'], function (d3) {
     }
 
 
+    scales.slideTo = function(middle_date, domain) {
+        var scale = {
+            left_date:  domain[0],
+            right_date: domain[1]
+        };
+        
+    };
+
+
     scales.zoomInSingleToScale = function(middle_date, from_scale)  {
         if (from_scale == scales.multi_year) return scales.year;
         if (from_scale == scales.year) return scales.month;

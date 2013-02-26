@@ -1,5 +1,5 @@
 var _ = require('underscore')._;
-
+var me = this;
 exports.views = {};
 exports.shows = {};
 exports.updates = {};
@@ -235,6 +235,14 @@ exports.shows["tray.jnlp"] = function(doc, req) {
 
 
 
-    return { 'headers' : {'Content-Type' : 'application/x-java-jnlp-file'}, 'body' :  result }
-}
+    return { 'headers' : {'Content-Type' : 'application/x-java-jnlp-file'}, 'body' :  result };
+};
 
+
+exports.shows.app_settings = function(doc, req) {
+    var data = this.app_settings || {};
+    return {
+        'headers' : {'Content-Type' : 'application/json'},
+        'body' :  JSON.stringify(data)
+    };
+};
