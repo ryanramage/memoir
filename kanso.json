@@ -7,7 +7,7 @@
     "categories": ["productivity", "journal"],
     "flattr_user_id" : "eckoit",
     "attachments": ["css", "img", "jam", "js",  "index.html", "application.appcache", "templates", "webstart"],
-    "modules": "couch",
+    "modules": ["couch", "views"],
     "load": "couch/ddoc",
 
     "icons": {
