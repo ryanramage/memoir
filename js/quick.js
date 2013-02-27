@@ -292,9 +292,8 @@ define('js/quick', [
                   couchr.get('_ddoc/_view/service_by_date', {limit: 200}, function(err, resp){
                       var ids = {};
                       _.each(resp.rows, function(row){
-                          var state = 'exists';
-                          if (row.value === true) state = 'ignore';
-                          ids[row.id] = state;
+                          var hash = [row.value.service, row.value.user, row.key].join('-');
+                          ids[hash] = 'exists';
                       });
                       cb(null, ids);
                   });
@@ -302,8 +301,9 @@ define('js/quick', [
           }, function(err, results){
               var docs = [];
               _.each(results.lifestream, function(item){
-                  item._id = item.config.service + '-' + item.date.getTime();
-                  if (results.previous[item._id]) return;
+                  //item._id = item.config.service + '-' + item.date.getTime();
+                  var hash = [item.config.service, item.config.user, item.date.getTime()].join('-');
+                  if (results.previous[hash]) return;
                   item.type = 'lifestream.service';
                   item.timestamp = item.date.getTime();
                   delete item.config._settings;

@@ -25,8 +25,8 @@ function (Track, Class, $, couchr, _, scales) {
 
                 // TODO - depending on scale, should limit the amount of data coming back
                 var query = {
-                    startkey : [settings.service_name, domain[0].getTime()],
-                    endkey : [settings.service_name, domain[1].getTime()],
+                    startkey : [settings.service_name, settings.service_user, domain[0].getTime()],
+                    endkey : [settings.service_name, settings.service_user, domain[1].getTime()],
                     include_docs : true
                 };
                 couchr.get('_ddoc/_view/service_by_service_and_date', query, callback );

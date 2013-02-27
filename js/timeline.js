@@ -110,7 +110,8 @@ define('js/timeline',[
                         name: item.service,
                         y: last_y,
                         height: 16,
-                        service_name: item.service
+                        service_name: item.service,
+                        service_user: item.user
                     });
                     last_y+= 16;
                 });

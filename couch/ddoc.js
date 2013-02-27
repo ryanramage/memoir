@@ -35,8 +35,8 @@ exports.views.service_by_date = {
     map : function(doc) {
         if (doc.type !== 'lifestream.service' || !doc.timestamp) return;
         var d = new Date(doc.timestamp);
-        var value = null;
-        if (doc.ignored) value = true;
+        var value = doc.config;
+        //if (doc.ignored) value = true;
         emit(d.getTime(), value);
     }
 };
@@ -46,7 +46,7 @@ exports.views.service_by_service_and_date = {
         if (doc.type !== 'lifestream.service' || !doc.timestamp || doc.ignored || !doc.config || !doc.config.service) return;
         var d = new Date(doc.timestamp);
 
-        emit([doc.config.service, d.getTime()], null);
+        emit([doc.config.service, doc.config.user, d.getTime()], null);
     }
 };
 
