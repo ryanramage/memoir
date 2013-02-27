@@ -299,7 +299,7 @@ define('js/quick', [
             '/quick/people' : exports.people,
             '/quick/journal' : exports.journal,
             '/quick/lifestream' : exports.lifestream,
-            '/quick' : exports.tag
+            '/quick' : exports.journal
         }
     }
 

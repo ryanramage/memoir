@@ -100,7 +100,8 @@ define('js/timeline',[
                     name : 'Audio',
                     y: 91,
                     height: 30
-                },
+                }
+                /*
                 {
                     track_type: 'service',
                     name : 'Ryan Github',
@@ -115,6 +116,7 @@ define('js/timeline',[
                     height: 16,
                     service_name: 'twitter'
                 }
+                */
             ]
         });
     }

@@ -39,7 +39,7 @@ function($, garden, director, events, quick, position, timeline){
      */
     exports.on_dom_ready = function(){
         router = director.Router(routes);
-        router.init('/quick/tag');
+        router.init('/quick/journal');
     }
     return exports;
 });
