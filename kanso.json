@@ -55,29 +55,29 @@
         "type": "object",
         "properties": {
             "Services": {
-                "title": "External Data Services",      
+                "title": "External Data Services",
                 "type": "array",
-                "items": {        
-                    "type": "object",        
-                    "order": ["service", "user"],       
-                    "required": ["service", "user"],        
-                    "properties": {          
-                        "service": {            
+                "items": {
+                    "type": "object",
+                    "order": ["service", "user"],
+                    "required": ["service", "user"],
+                    "properties": {
+                        "service": {
                             "type": "string",
                             "enum" : ["bitbucket","bitly","blogger","citeulike","dailymotion","delicious","deviantart","dribbble",
                                       "facebook_page","flickr","foomark","formspring","forrst","foursquare","gimmebar","github","googleplus",
                                        "googlereader","hypem","instapaper","iusethis","lastfm","librarything","miso","mlkshk",
                                        "pinboard","posterous","quora","reddit","rss","slideshare","snipplr","stackoverflow",
-                                       "tumblr","twitter","vimeo","wikipedia","wordpress","youtube","zotero"]  
-                        },          
-                        "user": {     
+                                       "tumblr","twitter","vimeo","wikipedia","wordpress","youtube","zotero"]
+                        },
+                        "user": {
                             "type": "string"
                         }
                     }
                 }
             }
         }
-    }, 
+    },
     "dependencies": {
         "modules": null,
         "attachments": null,

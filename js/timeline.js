@@ -15,7 +15,7 @@ define('js/timeline',[
     'js/ServiceTrack',
     'js/TagTrack',
     'js/date_utils',
-    'js/audio_player_controller',    
+    'js/audio_player_controller',
     'hbt!templates/timeline'
 ], function($, _, handlebars, couchr, d3, store, events, moment, scales, AudioTrack, ImageTrack, JournalTrack, ScrapbookTrack, ServiceTrack, TagTrack, date_utils, audio_controller, timeline_t){
     var exports = {};
@@ -33,7 +33,6 @@ define('js/timeline',[
         options = opts;
         selector = options.selector;
         options.emitter.on('section', function(name){
-            console.log(name);
             current_tab = name;
         });
     }
@@ -101,7 +100,7 @@ define('js/timeline',[
                     name : 'Audio',
                     y: 91,
                     height: 30
-                },                
+                },
                 {
                     track_type: 'service',
                     name : 'Ryan Github',
@@ -205,7 +204,7 @@ define('js/timeline',[
             .call(x_zoom.x(x).scaleExtent(scale_info.scale_extent).on("zoom", function(){
                 audio_controller.seeking();
                 zoom(true);
-                
+
             }));
 
         svg.append("defs")
@@ -250,7 +249,7 @@ define('js/timeline',[
 
 
 
-        
+
 
 
 
@@ -316,7 +315,7 @@ define('js/timeline',[
 
             // one other saftey check that we are on the timeline tab
             if ($('.timeline-widget').length === 0) return;
-            
+
             var date = date_utils.stringifyDate(scrubber_date);
             var duration = scales.getDuration(x.domain());
             _.defer(function(){
@@ -352,7 +351,7 @@ define('js/timeline',[
     }
     function redrawToDates(scale_info) {
         x.domain([scale_info.left_date, scale_info.right_date]);
-        
+
         x_zoom.x(x);//.scaleExtent(scale_info.scale_extent);
         //_.defer(zoom);
         zoom();
@@ -367,7 +366,7 @@ define('js/timeline',[
 
         var current_duration = scales.getDuration(x.domain());
         var scale_info = scales.getToScaleInfo(details.date, current_duration);
-        x.domain([scale_info.left_date, scale_info.right_date]);            
+        x.domain([scale_info.left_date, scale_info.right_date]);
         //x_zoom.x(x);//.scaleExtent(scale_info.scale_extent);
         var range = x.domain();
         track_space.select(".x.axis").call(xAxis);
@@ -375,7 +374,7 @@ define('js/timeline',[
 
         scrubber_date = new Date( d3.mean(range, function(d){ return d.getTime()  }));
         update_url_hash();
-        
+
         track_emitter.emit('zoom', x, true);
     });
     exports.show_centre_date = function(date) {

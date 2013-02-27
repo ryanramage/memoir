@@ -219,23 +219,35 @@ define('js/quick', [
 
             $('button.save').on('click', function(){
                 $('button.save').button('loading');
-                couchr.put('_journal/' + save_date_str + '/update', {entry : editor.exportFile() }, function(err, resp){
+                editor.save();
+                var content = editor.exportFile();
+                couchr.put('_journal/' + save_date_str + '/update', {entry : content }, function(err, resp){
                     //editor.save();
-                    console.log(err,resp);
-
-                    $('button.save').button('reset');
-                    setTimeout(function(){
-                        $('button.save').attr('disabled', 'disabled').addClass('disabled');
-                    }, 200);
-
-
-
-
+                    if (resp === 'no journal to update') {
+                      var doc = {
+                        _id: save_date_str,
+                        type: 'journal',
+                        entry: content
+                      };
+                       couchr.put('_db/' + save_date_str, doc, function(err, resp){
+                          console.log(err, resp);
+                          resetSaveButton();
+                       });
+                    } else {
+                      resetSaveButton();
+                    }
                 });
             });
 
         });
     };
+
+    function resetSaveButton() {
+      $('button.save').button('reset');
+      setTimeout(function(){
+          $('button.save').attr('disabled', 'disabled').addClass('disabled');
+      }, 200);
+    }
 
     exports.lifestream = function() {
         showNav('lifestream');
@@ -245,7 +257,6 @@ define('js/quick', [
           var settings = {
             list: ddoc_settings.Services
           };
-          console.log(settings);
           async.parallel({
               lifestream : function(cb){
                   $('#lifestream').lifestream(settings, cb);

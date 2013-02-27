@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" manifest="application.appcache">
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <title>My Path</title>
@@ -9,8 +9,6 @@
 
     <!-- Le styles -->
     <link href="css/app.css" rel="stylesheet">
-    <link href="/dashboard/_design/dashboard/_rewrite/_topbar.css" rel="stylesheet">
-
     <link rel="shortcut icon" href="img/favicon.ico">
 
   </head>
@@ -44,7 +42,7 @@
                     <li>
                       <audio id="player1"></audio>
                       <button class="btn btn-large play_btn">&#9658;</button>
-                    </li>  
+                    </li>
 
 
                     <li class="nav-header">Upload</li>
@@ -85,7 +83,6 @@
       require(['js/app', 'domReady', 'jquery'], function (app, domReady, $) {
         window.$ = $;
         // the topbar needed jquery to be loaded.
-        require(['/dashboard/_design/dashboard/_rewrite/static/js/topbar.js'], function(){});
         app.init();
 
         // the bootstrap jquery
@@ -96,5 +93,6 @@
         });
       });
     </script>
+    <script type="text/javascript" src="js/topbar.min.js"></script>
   </body>
 </html>

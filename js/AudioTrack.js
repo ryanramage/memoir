@@ -4,14 +4,14 @@
  * Time: 11:49 AM
  */
 define([
-    'js/Track', 
-    'Class', 
+    'js/Track',
+    'Class',
     'couchr',
     'underscore',
     'spin-js',
     'js/scales',
     'js/audio_player_controller'
-], 
+],
 
 function (Track, Class, couchr, _, Spinner, scales, audio_controller) {
 
@@ -21,22 +21,20 @@ function (Track, Class, couchr, _, Spinner, scales, audio_controller) {
         Extends: Track,
         initialize : function(settings, chart_details){
             AudioTrack.Super.call(this, settings, chart_details);
-            var me = this,
-                _spin = me.spin,
-                _spin_off = me.spin_off;
+            var me = this;
 
 
             var audio_emitter = audio_controller.get_emitter();
-            audio_emitter.on('seeking', _spin);
-            audio_emitter.on('loadstart', _spin);
-            audio_emitter.on('ended', _spin);
-            audio_emitter.on('progress', _spin_off);
+            audio_emitter.on('seeking',   function(){ me.spin() } );
+            audio_emitter.on('loadstart', function(){ me.spin() } );
+            audio_emitter.on('ended',     function(){ me.spin() } );
+            audio_emitter.on('progress',  function(){ me.spin_off() } );
             me.spin_showing = false;
 
             // add a div to the right of this
             this.icon = $('<div id="audio-spinner" class="audio-spinner"></div>');
             this.icon.css('top', this.settings.y + 'px');
-            this.icon.appendTo(this.chart_details.$gutter);          
+            this.icon.appendTo(this.chart_details.$gutter);
 
             var opts = {
               lines: 7, // The number of lines to draw
@@ -56,8 +54,9 @@ function (Track, Class, couchr, _, Spinner, scales, audio_controller) {
               left: 'auto' // Left position relative to parent in px
             };
             var target = document.getElementById('audio-spinner');
-            this.spinner = new Spinner.Spinner(opts).spin(target);
-            this.spinner.stop();
+            me.spinner = new Spinner.Spinner(opts).spin(target);
+            me.spinner.stop();
+
 
             me.getEntries = function(callback) {
                 var domain = me.chart_details.x.domain();
@@ -65,7 +64,7 @@ function (Track, Class, couchr, _, Spinner, scales, audio_controller) {
                 var starttime  = domain[0].getTime();
                 var endtime = domain[1].getTime();
                 //var scale = scales.getScale(domain);
-                // if (scale == scales.minute) 
+                // if (scale == scales.minute)
                 // TODO - depending on scale, should limit the amount of data coming back
                 audio_controller.get_playlist(starttime, endtime, callback);
             }
@@ -80,7 +79,7 @@ function (Track, Class, couchr, _, Spinner, scales, audio_controller) {
 
                 //enter
                 rect.enter().append("rect")
-                    .attr("class", function(d) {  
+                    .attr("class", function(d) {
                         if ((d.value.start <= centre_time) && (centre_time <= d.value.end)) return 'audio-tag-center ';
                         else return 'audio-tag';
                     })
@@ -94,7 +93,7 @@ function (Track, Class, couchr, _, Spinner, scales, audio_controller) {
                 //update
                 rect.attr("x", function(d) { return me.x(new Date(d.value.start)); })
                     .attr("width", function(d) { return   (me.x(new Date(d.value.end + 1000 )) - me.x(new Date(d.value.start))) || 1 ;}   )
-                    .attr("class", function(d) {  
+                    .attr("class", function(d) {
                         if ((d.value.start <= centre_time) && (centre_time <= d.value.end)) {
                             centre_audio = d;
                             return 'audio-tag-center '
@@ -108,10 +107,10 @@ function (Track, Class, couchr, _, Spinner, scales, audio_controller) {
 
                 if (centre_audio) {
                     audio_controller.cache_playlist({
-                        playlist: results, 
+                        playlist: results,
                         current_track: centre_audio,
                         centre_time: centre_time
-                    });          
+                    });
                 }
 
 
@@ -128,13 +127,13 @@ function (Track, Class, couchr, _, Spinner, scales, audio_controller) {
         spin_off: function() {
             if (this.spin_showing) this.spinner.stop();
             this.spin_showing = false;
-        },      
+        },
         draw: function() {
             AudioTrack.Super.prototype.draw.call(this);
-            this.space = this.chart_details.group.append("g").attr("clip-path", "url(#clip)"); 
+            this.space = this.chart_details.group.append("g").attr("clip-path", "url(#clip)");
 
-  
-            this.getEntries(this.drawEntries);         
+
+            this.getEntries(this.drawEntries);
         },
         zoom: function(x_domain, quick) {
             AudioTrack.Super.prototype.zoom.call(this, x_domain, quick);
@@ -145,17 +144,17 @@ function (Track, Class, couchr, _, Spinner, scales, audio_controller) {
             me.space.selectAll("rect")
                 .attr("x", function(d) { return me.x(new Date(d.value.start)); })
                 .attr("width", function(d) { return   (me.x(new Date(d.value.end + 1000)) - me.x(new Date(d.value.start))) || 1 ;}   )
-                .attr("class", function(d) {  
+                .attr("class", function(d) {
                         if ((d.value.start <= centre_time) && (centre_time <= d.value.end)) {
                             return 'audio-tag-center '
                         }
                         else return 'audio-tag';
-                    });                
+                    });
 
             if (!quick) me.drawEntriesDebounced();
         },
         distroy: function() {
-            
+
         }
     })
     return AudioTrack;

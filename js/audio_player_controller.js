@@ -8,12 +8,12 @@ define(['underscore', 'couchr', 'events'], function(_, couchr, events){
         $player = $('#player1'),
         state = 'unloaded',
         player = $player[0],
-        emitter = new events.EventEmitter();		
+        emitter = new events.EventEmitter();
 
 
     $player.on("timeupdate", function(details){
     	throttled_update();
-    }).on("ended", function() {    	
+    }).on("ended", function() {
     	emitter.emit('ended');
     	state = 'ended';
     }).on("play", function() {
@@ -40,7 +40,7 @@ define(['underscore', 'couchr', 'events'], function(_, couchr, events){
             endkey : endtime,
             include_docs : false
         }
-        couchr.get('_ddoc/_view/audio_by_time', query, callback )		
+        couchr.get('_ddoc/_view/audio_by_time', query, callback )
 	}
 
 
@@ -55,7 +55,7 @@ define(['underscore', 'couchr', 'events'], function(_, couchr, events){
 		if (player.currentTime === 0) return;
 		var play_date = new Date(current_track.key + (player.currentTime * 1000));
 		var update = {
-			time: player.currentTime, 
+			time: player.currentTime,
 			date: play_date
 		};
 		emitter.emit('progress', update);
@@ -71,6 +71,8 @@ define(['underscore', 'couchr', 'events'], function(_, couchr, events){
 	}
 
 	function find_track_in_playlist(centre_time) {
+        if (!playlist || !playlist.rows) return [];
+
 		return _.find(playlist.rows, function(d) {
             if ((d.value.start <= centre_time) && (centre_time <= d.value.end)) return true;
             else return false;
@@ -83,7 +85,7 @@ define(['underscore', 'couchr', 'events'], function(_, couchr, events){
 
 		//player.pause();
 		current_track = find_track_in_playlist(date.getTime());
-		if (!current_track) return;
+		if (!current_track || !current_track.value) return;
 
         var media = _.keys(current_track.value.file)[0];
         var seekTime = (date - current_track.key) / 1000;
@@ -94,7 +96,7 @@ define(['underscore', 'couchr', 'events'], function(_, couchr, events){
                 this.play();
                 player.currentTime = seekTime;
             })
-        player.load(); 
+        player.load();
         _play();
 	}
 
