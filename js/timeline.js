@@ -81,43 +81,41 @@ define('js/timeline',[
 
     function get_tracks(callback) {
         //couchr.get('_tracks', _.cbalter(callback, 'rows'));
-        callback(null, {
-            rows : [
-                {
-                    track_type: 'tag',
-                    name : 'Tags',
-                    y: 0,
-                    height: 30
-                },
-                {
-                    track_type: 'image',
-                    name : 'Images',
-                    y: 31,
-                    height: 60
-                },
-                {
-                    track_type: 'audio',
-                    name : 'Audio',
-                    y: 91,
-                    height: 30
-                }
-                /*
-                {
-                    track_type: 'service',
-                    name : 'Ryan Github',
-                    y: 121,
-                    height: 16,
-                    service_name: 'github'
-                },
-                {
-                    track_type: 'service',
-                    name : 'Eckoit',
-                    y: 138,
-                    height: 16,
-                    service_name: 'twitter'
-                }
-                */
-            ]
+        var rows = [
+            {
+                track_type: 'tag',
+                name : 'Tags',
+                y: 0,
+                height: 30
+            },
+            {
+                track_type: 'image',
+                name : 'Images',
+                y: 31,
+                height: 60
+            },
+            {
+                track_type: 'audio',
+                name : 'Audio',
+                y: 91,
+                height: 30
+            }
+        ];
+        couchr.get('./_ddoc/_show/app_settings/app_settings', function(err, app_settings){
+            var last_y = 121;
+            if (app_settings && app_settings.Services && app_settings.Services.length > 0) {
+                _.each(app_settings.Services, function(item){
+                    rows.push({
+                        track_type: 'service',
+                        name: item.service,
+                        y: last_y,
+                        height: 16,
+                        service_name: item.service
+                    });
+                    last_y+= 16;
+                });
+            }
+            callback(null, {rows : rows } );
         });
     }
 
