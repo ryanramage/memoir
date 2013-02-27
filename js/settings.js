@@ -10,6 +10,7 @@ define(['jquery', 'underscore', 'couchr', 'async', 'json.edit', 'hbt!templates/s
     };
 
     function settings() {
+        options.emitter.emit('section', 'settings');
         var editor, last_app_settings;
 
         $(selector).html(settings_t());
@@ -21,7 +22,7 @@ define(['jquery', 'underscore', 'couchr', 'async', 'json.edit', 'hbt!templates/s
                 last_app_settings = app_settings;
 
                 if (app_settings) {
-                    schema.default = app_settings;
+                    schema['default'] = app_settings;
                 }
 
 
@@ -41,7 +42,7 @@ define(['jquery', 'underscore', 'couchr', 'async', 'json.edit', 'hbt!templates/s
 
                    err_alert.show(200)
                        .find('button.close')
-                       .on('click', function () { err_alert.hide(); })
+                       .on('click', function () { err_alert.hide(); });
                    err_alert.find('h4')
                         .text(form.result.msg);
                    return false;
