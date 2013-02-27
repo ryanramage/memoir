@@ -9,13 +9,14 @@ define('js/quick', [
     'EpicEditor',
     'moment',
     'jquery-lifestream',
+    'spin-js',
     'hbt!templates/quick',
     'hbt!templates/quick_tag',
     'hbt!templates/quick_people',
     'hbt!templates/quick_people_row',
     'hbt!templates/quick_journal',
     'hbt!templates/quick_lifestream'
-], function ($, _, async, handlebars, couchr, birddown, reference, EpicEditor, moment, lifestream, base_t, tag_t, people_t, people_row_t, journal_t, lifestream_t) {
+], function ($, _, async, handlebars, couchr, birddown, reference, EpicEditor, moment, lifestream, Spinner, base_t, tag_t, people_t, people_row_t, journal_t, lifestream_t) {
 
     var exports = {};
     var selector = '.main';
@@ -258,6 +259,26 @@ define('js/quick', [
         showNav('lifestream');
         $(selector).find('.quick_form').html(lifestream_t());
 
+        var target = document.getElementById('load-spinner');
+        var spinner_opts = {
+          lines: 7, // The number of lines to draw
+          length: 6, // The length of each line
+          width: 3, // The line thickness
+          radius: 0, // The radius of the inner circle
+          corners: 0.3, // Corner roundness (0..1)
+          rotate: 0, // The rotation offset
+          color: '#000', // #rgb or #rrggbb
+          speed: 2.0, // Rounds per second
+          trail: 29, // Afterglow percentage
+          shadow: false, // Whether to render a shadow
+          hwaccel: false, // Whether to use hardware acceleration
+          className: 'spinner', // The CSS class to assign to the spinner
+          zIndex: 2e9, // The z-index (defaults to 2000000000)
+          top: 0, // Top position relative to parent in px
+          left: 0 // Left position relative to parent in px
+        };
+        var spinner = new Spinner.Spinner(spinner_opts).spin(target);
+
         couchr.get('_ddoc/_show/app_settings/app_settings', function(err, ddoc_settings) {
           if (!ddoc_settings || !ddoc_settings.Services) return show_settings_messgage();
           var settings = {
@@ -290,14 +311,22 @@ define('js/quick', [
               });
               if (docs.length > 0){
                   couchr.post('_db/_bulk_docs', {docs: docs}, function(err, resp){
-                      //console.log(err, resp);
-
+                      stop_lifestream_spinner(spinner);
                   });
+              } else {
+                stop_lifestream_spinner(spinner);
               }
 
           });
         });
     };
+
+    function stop_lifestream_spinner(spinner){
+      setTimeout(function(){
+        spinner.stop();
+        $('.load-status').html('Feeds saved.');
+      }, 1000);
+    }
 
     exports.routes = function() {
        return  {
