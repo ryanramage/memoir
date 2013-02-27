@@ -75,6 +75,16 @@ var jam = {
             "main": "core.js"
         },
         {
+            "name": "jquery.lego",
+            "location": "jam/jquery.lego",
+            "main": "jquery.lego.js"
+        },
+        {
+            "name": "json.edit",
+            "location": "jam/json.edit",
+            "main": "json.edit.js"
+        },
+        {
             "name": "marked",
             "location": "jam/marked",
             "main": "./lib/marked.js"

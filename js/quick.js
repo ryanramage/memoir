@@ -249,11 +249,17 @@ define('js/quick', [
       }, 200);
     }
 
+    function show_settings_messgage() {
+      $('#lifestream').html('No services. Please add them in your <a href="#/settings">settings</a>.');
+    }
+
+
     exports.lifestream = function() {
         showNav('lifestream');
         $(selector).find('.quick_form').html(lifestream_t());
 
-        couchr.get('_ddoc/_show/app_settings', function(err, ddoc_settings) {
+        couchr.get('_ddoc/_show/app_settings/app_settings', function(err, ddoc_settings) {
+          if (!ddoc_settings || !ddoc_settings.Services) return show_settings_messgage();
           var settings = {
             list: ddoc_settings.Services
           };
@@ -284,7 +290,7 @@ define('js/quick', [
               });
               if (docs.length > 0){
                   couchr.post('_db/_bulk_docs', {docs: docs}, function(err, resp){
-                      console.log(err, resp);
+                      //console.log(err, resp);
 
                   });
               }

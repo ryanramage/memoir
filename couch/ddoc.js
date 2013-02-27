@@ -28,7 +28,7 @@ exports.updates.journal = function(doc, req) {
     if (doc.type !== 'journal') return [null, 'Trying to update a non journal thing'];
     doc.entry = form.entry;
     return [doc, 'UPDATE SUCCESS'];
-}
+};
 
 
 exports.views.service_by_date = {
@@ -39,7 +39,7 @@ exports.views.service_by_date = {
         if (doc.ignored) value = true;
         emit(d.getTime(), value);
     }
-}
+};
 
 exports.views.service_by_service_and_date = {
     map : function(doc) {
@@ -48,7 +48,7 @@ exports.views.service_by_service_and_date = {
 
         emit([doc.config.service, d.getTime()], null);
     }
-}
+};
 
 
 
@@ -82,7 +82,7 @@ exports.validate_doc_update = function(newDoc, oldDoc, userCtx, secObj) {
         log('User : ' + userCtx.name + ' changing document: ' +  newDoc._id);
     else
         throw {'forbidden':'Only admins and users can alter documents'};
-}
+};
 
 
 
@@ -101,16 +101,16 @@ exports.views.audio_by_time = {
            emit(result.start, result);
        }
    }
-}
+};
 
 
 exports.views.timeline_items = {
     map: function(doc) {
         if (doc.timestamp) {
-            emit(doc.timestamp, doc.type)
+            emit(doc.timestamp, doc.type);
         }
     }
-}
+};
 
 
 exports.views.mark_totals = {
@@ -125,14 +125,14 @@ exports.views.mark_totals = {
         }
     },
     reduce: '_sum'
-}
+};
 
 exports.views.audio_totals = {
     map : function(doc) {
         if (doc.recording) {
            var start  = doc.recording.start;
            var length = doc.recording.length;
-           if (length == 0) return;
+           if (length === 0) return;
            var d = new Date(start);
            var year = Number(d.getFullYear());
            var month = d.getMonth() + 1;
@@ -143,21 +143,21 @@ exports.views.audio_totals = {
         }
     },
     reduce: '_sum'
-}
+};
 
 
 
 exports.views.audio_md5s = {
     map : function(doc) {
         if (doc.liferecorder && doc._attachments) {
-            for (i in doc._attachments) {
+            for (var i in doc._attachments) {
                 var attach = doc._attachments[i];
                 emit(attach.digest, null);
             }
         }
     },
     reduce: '_count'
-}
+};
 
 
 exports.shows["tray.jnlp"] = function(doc, req) {
@@ -169,7 +169,7 @@ exports.shows["tray.jnlp"] = function(doc, req) {
     args.db = req.userCtx.db;
     args.recording = req.query.recording;
     args.user = req.userCtx.name;
-    if (args.user == null) {
+    if (args.user === null) {
         args.user = req.query.user;
     }
     args.dd = dd;
@@ -192,7 +192,7 @@ exports.shows["tray.jnlp"] = function(doc, req) {
 
 
     splash = 'images/splash.png';
-    icon = 'images/icon.png'
+    icon = 'images/icon.png';
 
     result += '<icon kind=\"splash\" href=\"'+ splash +'\"/>';
     result += '<icon href=\"' + icon + '\"/>';
@@ -240,9 +240,18 @@ exports.shows["tray.jnlp"] = function(doc, req) {
 
 
 exports.shows.app_settings = function(doc, req) {
-    var data = this.app_settings || {};
+    var data = doc || {_id: 'app_settings', type: 'settings'};
     return {
         'headers' : {'Content-Type' : 'application/json'},
         'body' :  JSON.stringify(data)
     };
 };
+
+exports.shows.app_config = function(doc, req) {
+    var data =  this.kanso.config.settings_schema || {};
+    return {
+        'headers' : {'Content-Type' : 'application/json'},
+        'body' :  JSON.stringify(data)
+    };
+};
+

@@ -5,13 +5,14 @@ define('js/app',[
     'events',
     'js/quick',
     'js/position',
-    'js/timeline'
+    'js/timeline',
+    'js/settings'
 ],
-function($, garden, director, events, quick, position, timeline){
+function($, garden, director, events, quick, position, timeline, settings){
     var exports = {};
     var emitter = new events.EventEmitter();
     var coords;
-    var routes = _.extend({}, quick.routes(), timeline.routes());
+    var routes = _.extend({}, quick.routes(), timeline.routes(), settings.routes());
 
     /**
      * This is where you will put things you can do before the dom is loaded.
@@ -21,7 +22,7 @@ function($, garden, director, events, quick, position, timeline){
             coords = positionInfo.coords;
             emitter.emit('location', coords);
         });
-        _.invoke([quick, timeline], 'init', {
+        _.invoke([quick, timeline, settings], 'init', {
             selector : '.main',
             emitter : emitter
         });
