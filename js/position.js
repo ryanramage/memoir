@@ -18,5 +18,5 @@ define('js/position', function(){
         getLastPosition : function() {
             return currentPosition;
         }
-    }
+    };
 });

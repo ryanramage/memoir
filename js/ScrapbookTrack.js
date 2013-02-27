@@ -6,6 +6,6 @@
 define('js/ScrapbookTrack', ['js/Track', 'Class'], function (Track, Class) {
     var ScrapbookTrack = Class.design('ScrapbookTrack', {
         Extends: Track
-    })
+    });
     return ScrapbookTrack;
 });

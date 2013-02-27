@@ -35,7 +35,7 @@ define('js/timeline',[
         options.emitter.on('section', function(name){
             current_tab = name;
         });
-    }
+    };
 
 
 
@@ -44,7 +44,7 @@ define('js/timeline',[
         var initialDate = date_utils.parseDate(textDate);
         var scale_info = scales.getToScaleInfo(initialDate, scales.week);
         createTimeline(initialDate, scale_info);
-    }
+    };
 
     exports.now = function(){
        options.emitter.emit('section', 'timeline');
@@ -57,7 +57,7 @@ define('js/timeline',[
            scale_info = scales.getToScaleInfo(initialDate, stored_timeline.duration);
        }
        createTimeline(initialDate, scale_info);
-    }
+    };
 
     exports.time_and_zoom = function(textDate, zoom) {
         options.emitter.emit('section', 'timeline');
@@ -65,7 +65,7 @@ define('js/timeline',[
         var initialDate = date_utils.parseDate(textDate);
         var scale_info = scales.getToScaleInfo(initialDate, zoom);
         createTimeline(initialDate, scale_info);
-    }
+    };
 
 
     exports.routes = function() {
@@ -75,8 +75,8 @@ define('js/timeline',[
            '/timeline' : exports.now,
            '/timeline/(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2})' : exports.time,
            '/timeline/(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2})/(\\d+)' : exports.time_and_zoom
-        }
-    }
+        };
+    };
 
 
     function get_tracks(callback) {
@@ -136,7 +136,7 @@ define('js/timeline',[
                 emitter : emitter,
                 $canvas : $canvas,
                 $gutter : $gutter
-            }
+            };
             _.each(tracks.rows, function(track){
                 switch (track.track_type) {
                     case 'audio'     : objectified.push(new AudioTrack(track, chart_details)); break;
@@ -147,7 +147,7 @@ define('js/timeline',[
                     case 'tag'       : objectified.push(new TagTrack(track, chart_details)); break;
                     default : console.log('unknown track type', track);
                 }
-            })
+            });
             callback(null, objectified);
         });
     }
@@ -155,7 +155,7 @@ define('js/timeline',[
     function draw_tracks(tracks) {
         _.each(tracks, function(track){
             track.draw();
-        })
+        });
     }
 
 
@@ -221,7 +221,7 @@ define('js/timeline',[
             .attr("width", width)
             .attr("height", height);
 
-        track_space =  svg.append("g")
+        track_space =  svg.append("g");
             //.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
 
@@ -322,20 +322,20 @@ define('js/timeline',[
             var duration = scales.getDuration(x.domain());
             _.defer(function(){
                 var duration = scales.getDuration(x.domain());
-                store.set('timeline_current', { date : date, duration: duration })
+                store.set('timeline_current', { date : date, duration: duration });
             });
             history.replaceState({}, date, "#/timeline/" + date + '/' + duration);
             exports.show_centre_date(date);
         }
-    }
+    };
 
     var update_url_hash = _.throttle(update_url_hash_instant, 900);
 
     var play_audio = function() {
         var range = x.domain();
-        var play_date = new Date( d3.mean(range, function(d){ return d.getTime()  }));
+        var play_date = new Date( d3.mean(range, function(d){ return d.getTime();  }));
         audio_controller.play( play_date );
-    }
+    };
     var play_audio_debounced = _.debounce(play_audio, 0);
 
     function zoom(play_audio) {
@@ -343,7 +343,7 @@ define('js/timeline',[
         track_space.select(".x.axis").call(xAxis);
         track_space.select(".y.axis").call(yAxis);
 
-        scrubber_date = new Date( d3.mean(range, function(d){ return d.getTime()  }));
+        scrubber_date = new Date( d3.mean(range, function(d){ return d.getTime();  }));
         update_url_hash();
         exports.show_centre_date(scrubber_date);
         track_emitter.emit('zoom', x, false);
@@ -374,7 +374,7 @@ define('js/timeline',[
         track_space.select(".x.axis").call(xAxis);
         track_space.select(".y.axis").call(yAxis);
 
-        scrubber_date = new Date( d3.mean(range, function(d){ return d.getTime()  }));
+        scrubber_date = new Date( d3.mean(range, function(d){ return d.getTime();  }));
         update_url_hash();
 
         track_emitter.emit('zoom', x, true);
@@ -382,7 +382,7 @@ define('js/timeline',[
     exports.show_centre_date = function(date) {
         var d_str = moment(date).format('ddd MMM D, h:mm:ss a, YYYY');
         $('.toolbar .centre-date').text(d_str);
-    }
+    };
 
     return exports;
-})
+});

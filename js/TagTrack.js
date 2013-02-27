@@ -28,9 +28,9 @@ define('js/TagTrack', ['js/Track', 'Class', 'jquery'], function (Track, Class, $
                 .attr("height",me.settings.height - 1)
                 .attr("width", function(d) {  return me.x(d.end) - me.x(d.start); })
                 .attr("fill", "#2d578b")
-                .on('click', function(d,i){   $(this).addClass('hover')   })
-                .on('mouseover', function(d,i){  $(this).addClass('hover')   })
-                .on('mouseout', function(d,i){  $(this).removeClass('hover')   });
+                .on('click', function(d,i){   $(this).addClass('hover');   })
+                .on('mouseover', function(d,i){  $(this).addClass('hover');   })
+                .on('mouseout', function(d,i){  $(this).removeClass('hover');   });
         },
         zoom: function(x_domain, quick) {
             TagTrack.Super.prototype.zoom.call(this, x_domain, quick);

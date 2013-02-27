@@ -25,10 +25,10 @@ function (Track, Class, couchr, _, Spinner, scales, audio_controller) {
 
 
             var audio_emitter = audio_controller.get_emitter();
-            audio_emitter.on('seeking',   function(){ me.spin() } );
-            audio_emitter.on('loadstart', function(){ me.spin() } );
-            audio_emitter.on('ended',     function(){ me.spin() } );
-            audio_emitter.on('progress',  function(){ me.spin_off() } );
+            audio_emitter.on('seeking',   function(){ me.spin(); } );
+            audio_emitter.on('loadstart', function(){ me.spin(); } );
+            audio_emitter.on('ended',     function(){ me.spin(); } );
+            audio_emitter.on('progress',  function(){ me.spin_off(); } );
             me.spin_showing = false;
 
             // add a div to the right of this
@@ -67,11 +67,11 @@ function (Track, Class, couchr, _, Spinner, scales, audio_controller) {
                 // if (scale == scales.minute)
                 // TODO - depending on scale, should limit the amount of data coming back
                 audio_controller.get_playlist(starttime, endtime, callback);
-            }
+            };
 
             me.drawEntries = function(err, results) {
                 var rect = me.space.selectAll("rect")
-                    .data(results.rows,  function(d) { return d.id; })
+                    .data(results.rows,  function(d) { return d.id; });
 
                 var centre_date = scales.getMeanDate(me.x.domain());
                 var centre_time = centre_date.getTime();
@@ -87,7 +87,7 @@ function (Track, Class, couchr, _, Spinner, scales, audio_controller) {
                     .attr("y", me.settings.y + 1)
                     .attr("height",me.settings.height - 1)
                     .attr("width", function(d) { return   (me.x(new Date(d.value.end + 1000 )) - me.x(new Date(d.value.start))) || 1 ;}   )
-                    .attr("fill", "#2d578b")
+                    .attr("fill", "#2d578b");
 
 
                 //update
@@ -96,7 +96,7 @@ function (Track, Class, couchr, _, Spinner, scales, audio_controller) {
                     .attr("class", function(d) {
                         if ((d.value.start <= centre_time) && (centre_time <= d.value.end)) {
                             centre_audio = d;
-                            return 'audio-tag-center '
+                            return 'audio-tag-center ';
                         }
                         else return 'audio-tag';
                     });
@@ -114,7 +114,7 @@ function (Track, Class, couchr, _, Spinner, scales, audio_controller) {
                 }
 
 
-            }
+            };
             me.drawEntriesDebounced = _.debounce(function(){
                 me.getEntries(me.drawEntries);
             }, 200);
@@ -146,7 +146,7 @@ function (Track, Class, couchr, _, Spinner, scales, audio_controller) {
                 .attr("width", function(d) { return   (me.x(new Date(d.value.end + 1000)) - me.x(new Date(d.value.start))) || 1 ;}   )
                 .attr("class", function(d) {
                         if ((d.value.start <= centre_time) && (centre_time <= d.value.end)) {
-                            return 'audio-tag-center '
+                            return 'audio-tag-center ';
                         }
                         else return 'audio-tag';
                     });
@@ -156,6 +156,6 @@ function (Track, Class, couchr, _, Spinner, scales, audio_controller) {
         distroy: function() {
 
         }
-    })
+    });
     return AudioTrack;
 });

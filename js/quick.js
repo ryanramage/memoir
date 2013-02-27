@@ -18,19 +18,19 @@ define('js/quick', [
 ], function ($, _, async, handlebars, couchr, birddown, reference, EpicEditor, moment, lifestream, base_t, tag_t, people_t, people_row_t, journal_t, lifestream_t) {
 
     var exports = {};
-    var selector = '.main'
+    var selector = '.main';
     var options;
 
     exports.init = function (opts) {
         options = opts;
         selector = opts.selector;
-    }
+    };
 
 
     exports.tag = function () {
         showNav('tag');
         $(selector).find('.quick_form').html(tag_t());
-    }
+    };
 
 
     function addPerson(name) {
@@ -39,10 +39,10 @@ define('js/quick', [
         var person = {
             name : name,
             handle : name
-        }
+        };
 
         $(selector).find('.table.name').show();
-        $(selector).find('.table.name tbody').append(people_row_t(person))
+        $(selector).find('.table.name tbody').append(people_row_t(person));
 
     }
 
@@ -55,7 +55,7 @@ define('js/quick', [
         $(selector).find('form').on('submit', function(){
             addPerson($person_entry.val());
             return false;
-        })
+        });
 
 
         var eventName = "onwebkitspeechchange" in $person_entry.get(0) ? "webkitspeechchange" : "speechchange";
@@ -63,7 +63,7 @@ define('js/quick', [
            addPerson($person_entry.val());
            $person_entry.val('');
         });
-    }
+    };
 
 
    function cite($btn, editor) {
@@ -89,7 +89,7 @@ define('js/quick', [
        }
 
        // add the prefix
-       var range = selection.getRangeAt(0);
+       range = selection.getRangeAt(0);
        range.insertNode(document.createTextNode(prefix));
        range.collapse(false);
 
@@ -112,7 +112,7 @@ define('js/quick', [
        var noTextSelected = (range.endOffset === range.startOffset);
 
        // add the prefix
-       var range = selection.getRangeAt(0);
+       range = selection.getRangeAt(0);
        range.insertNode(document.createTextNode(prefix));
        range.collapse(false);
 
@@ -149,7 +149,7 @@ define('js/quick', [
         var reference_sheet_json;
         var parse = function(str){
             return bd.parse(str  + reference.generateReferenceSheetMarkdown(reference_sheet_json));
-        }
+        };
 
         var editor = new EpicEditor({
             parser: parse,
@@ -165,18 +165,18 @@ define('js/quick', [
         editor.on('update', function(){
             // feels dirty, show state.
             $('button.save').removeAttr("disabled").removeClass('disabled');
-        })
+        });
 
 
         var timeline_query = {
             startkey: moment().sod().valueOf(),
             endkey: moment().eod().valueOf(),
             include_docs: true
-        }
+        };
 
         var journal_query = {
             date : save_date_str
-        }
+        };
 
 
         async.parallel({
@@ -291,7 +291,7 @@ define('js/quick', [
 
           });
         });
-    }
+    };
 
     exports.routes = function() {
        return  {
@@ -300,8 +300,8 @@ define('js/quick', [
             '/quick/journal' : exports.journal,
             '/quick/lifestream' : exports.lifestream,
             '/quick' : exports.journal
-        }
-    }
+        };
+    };
 
 
 
@@ -314,4 +314,4 @@ define('js/quick', [
 
 
     return exports;
-})
+});

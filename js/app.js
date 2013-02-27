@@ -25,7 +25,7 @@ function($, garden, director, events, quick, position, timeline){
             selector : '.main',
             emitter : emitter
         });
-    }
+    };
 
 
     emitter.on("section", function(name){
@@ -40,6 +40,6 @@ function($, garden, director, events, quick, position, timeline){
     exports.on_dom_ready = function(){
         router = director.Router(routes);
         router.init('/quick/journal');
-    }
+    };
     return exports;
 });

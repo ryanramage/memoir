@@ -19,12 +19,12 @@ define('js/scales', ['d3'], function (d3) {
 
 
     scales.getMeanDate = function(domain) {
-     return new Date( d3.mean(domain, function(d){ return d.getTime()  }))
-    }
+     return new Date( d3.mean(domain, function(d){ return d.getTime();  }));
+    };
 
     scales.getDuration = function(domain) {
-        return domain[1].getTime() - domain[0].getTime()
-    }
+        return domain[1].getTime() - domain[0].getTime();
+    };
 
 
     scales.getScale = function(domain) {
@@ -36,7 +36,7 @@ define('js/scales', ['d3'], function (d3) {
         if (duration <= scales.month) return scales.month;
         if (duration <= scales.year) return scales.year;
         return scales.multi_year;
-    }
+    };
 
     scales.getScaleExtent = function(scale) {
         if (scale <= scales.minute) return [0.0000003, 6];
@@ -46,7 +46,7 @@ define('js/scales', ['d3'], function (d3) {
         if (scale <= scales.month) return [0.005, 221672];
         if (scale <= scales.year) return [0.05, 3174442];
         return [0.5, 325932957];
-    }
+    };
 
 
     scales.slideTo = function(middle_date, domain) {
@@ -54,7 +54,7 @@ define('js/scales', ['d3'], function (d3) {
             left_date:  domain[0],
             right_date: domain[1]
         };
-        
+
     };
 
 
@@ -67,7 +67,7 @@ define('js/scales', ['d3'], function (d3) {
         if (from_scale == scales.hour) return scales.minute;
         if (from_scale == scales.minute) return scales.minute;
 
-    }
+    };
 
     scales.zoomOutSingleToScale = function(middle_date, from_scale)  {
         if (from_scale == scales.multi_year) return scales.multi_year;
@@ -78,11 +78,11 @@ define('js/scales', ['d3'], function (d3) {
         if (from_scale == scales.hour) return scales.day;
         if (from_scale == scales.minute) return scales.hour;
 
-    }
+    };
 
     scales.getToScaleInfoFromDomain = function(domain) {
 
-    }
+    };
 
 
     scales.getToScaleInfo = function(middle_date, to_scale) {
@@ -94,7 +94,7 @@ define('js/scales', ['d3'], function (d3) {
             left_date : left_date,
             right_date : right_date,
             scale_extent : scale_extent
-        }
-    }
+        };
+    };
     return scales;
 });

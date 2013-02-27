@@ -9,7 +9,7 @@ define('js/ServiceTrack', [
     'jquery',
     'couchr',
     'underscore',
-    'js/scales',
+    'js/scales'
 ],
 
 function (Track, Class, $, couchr, _, scales) {
@@ -28,13 +28,13 @@ function (Track, Class, $, couchr, _, scales) {
                     startkey : [settings.service_name, domain[0].getTime()],
                     endkey : [settings.service_name, domain[1].getTime()],
                     include_docs : true
-                }
-                couchr.get('_ddoc/_view/service_by_service_and_date', query, callback )
-            }
+                };
+                couchr.get('_ddoc/_view/service_by_service_and_date', query, callback );
+            };
 
             me.drawEntries = function(err, results) {
                 var rect = me.space.selectAll("rect")
-                    .data(results.rows,  function(d) { return d.id; })
+                    .data(results.rows,  function(d) { return d.id; });
 
                 //enter
                 rect.enter().append("rect")
@@ -43,11 +43,11 @@ function (Track, Class, $, couchr, _, scales) {
                     .attr("y", me.settings.y + 1)
                     .attr("height",me.settings.height - 1)
                     .attr("width", "4")
-                    .attr("fill", "#2d578b")
+                    .attr("fill", "#2d578b");
 
 
                 //update
-                rect.attr("x", function(d) { return me.x(new Date(d.doc.timestamp)); })
+                rect.attr("x", function(d) { return me.x(new Date(d.doc.timestamp)); });
 
                 // delete
                 rect.exit()
@@ -62,11 +62,11 @@ function (Track, Class, $, couchr, _, scales) {
                         return '<span class="lifestream-' + me.settings.service_name + ' timeline-service-popup-icon"></span>' + this.__data__.doc.config.user;
                     },
                     content : function(){
-                        return  this.__data__.doc.html
+                        return  this.__data__.doc.html;
                     }
                 });
 
-            }
+            };
 
             me.drawEntriesDebounced = _.debounce(function(){
                 me.getEntries(me.drawEntries);
@@ -91,6 +91,6 @@ function (Track, Class, $, couchr, _, scales) {
             me.space.selectAll("rect").attr("x", function(d) { return me.x(new Date(d.doc.timestamp)); });
             if (!quick) me.drawEntriesDebounced();
         }
-    })
+    });
     return ServiceTrack;
 });

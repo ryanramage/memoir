@@ -12,22 +12,22 @@ define(['underscore', 'couchr', 'events'], function(_, couchr, events){
 
 
     $player.on("timeupdate", function(details){
-    	throttled_update();
+        throttled_update();
     }).on("ended", function() {
-    	emitter.emit('ended');
-    	state = 'ended';
+        emitter.emit('ended');
+        state = 'ended';
     }).on("play", function() {
 
     }).on("seeking", function() {
 
-    	emitter.emit('seeking');
+        emitter.emit('seeking');
     }).on("loadstart", function() {
-    	emitter.emit('loadstart');
-    })
+        emitter.emit('loadstart');
+    });
 
     exports.get_emitter = function() {
-    	return emitter;
-    }
+        return emitter;
+    };
 
 
 	exports.get_playlist = function(starttime, endtime, callback) {
@@ -39,16 +39,16 @@ define(['underscore', 'couchr', 'events'], function(_, couchr, events){
             startkey : startkey,
             endkey : endtime,
             include_docs : false
-        }
-        couchr.get('_ddoc/_view/audio_by_time', query, callback )
-	}
+        };
+        couchr.get('_ddoc/_view/audio_by_time', query, callback );
+	};
 
 
 	exports.cache_playlist = function(details) {
-		if (details.playlist) playlist = details.playlist;
-		if (details.current_track) current_track = details.current_track;
-		if (details.centre_time) suggested_time = details.centre_time
-	}
+        if (details.playlist) playlist = details.playlist;
+        if (details.current_track) current_track = details.current_track;
+        if (details.centre_time) suggested_time = details.centre_time;
+	};
 
 	function _update() {
 		if (state != 'playing') return;
@@ -76,7 +76,7 @@ define(['underscore', 'couchr', 'events'], function(_, couchr, events){
 		return _.find(playlist.rows, function(d) {
             if ((d.value.start <= centre_time) && (centre_time <= d.value.end)) return true;
             else return false;
-		})
+		});
 	}
 
 
@@ -95,14 +95,14 @@ define(['underscore', 'couchr', 'events'], function(_, couchr, events){
             .on('loadedmetadata', function(){
                 this.play();
                 player.currentTime = seekTime;
-            })
+            });
         player.load();
         _play();
-	}
+	};
 
 	exports.seeking = function() {
 		state = 'seeking';
-	}
+	};
 
 	return exports;
 

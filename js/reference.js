@@ -16,22 +16,22 @@ define('js/reference', [
 
     exports.getHtml = function(doc){
         if (doc.type === 'lifestream.service') return doc.html;
-    }
+    };
 
     exports.getTextDesc = function(doc){
         return _s.stripTags(exports.getHtml(doc));
-    }
+    };
 
     exports.getIconClass = function(doc) {
         if (doc.type === 'lifestream.service') return 'lifestream-' +  doc.config.service ;
         return null;
-    }
+    };
 
     exports.getHref = function(doc) {
         if (doc.type === 'lifestream.service') return doc.url;
         // for now
         return '#/timeline/' + date_utils.stringifyDate(doc.timestamp);
-    }
+    };
 
     function appendNonListedItems(doc, timeline_entries) {
 
@@ -42,18 +42,18 @@ define('js/reference', [
         _.each(timeline_entries, function(entry) {
             var tl_doc = entry.doc;
 
-            if (! _.detect(doc.references, function(check){ return (check === tl_doc._id)})) {
+            if (! _.detect(doc.references, function(check){ return (check === tl_doc._id); })) {
 
                 to_add.push(tl_doc._id);
-            };
+            }
         });
         doc.references.push.apply(doc.references, to_add);
 
         return {
             updated : (to_add.length > 0),
             doc : doc
-        }
-    };
+        };
+    }
 
     function orderBasedOnSavedReferences(doc, timeline_entries) {
         var keyMap = {};
@@ -74,7 +74,7 @@ define('js/reference', [
                 ref_date : moment(tl_doc.timestamp).format("h:mm:ss a"),
                 index :index++,
                 id : tl_doc._id
-            }
+            };
         });
 
     }
@@ -86,11 +86,11 @@ define('js/reference', [
         response.html = template(response.references);
         return response;
 
-    }
+    };
 
     exports.generateReferenceSheetMarkdown = function(references) {
         return ref_sheet_template(references);
-    }
+    };
 
 
     return exports;
