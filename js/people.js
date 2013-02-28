@@ -30,27 +30,77 @@ define([
 
     }
 
+    function showDisambiguationPage(name, rows) {
+        showNav(name, 'details');
+    }
+
+
     function viewDetails(name) {
         showNav(name, 'details');
-
-        var person_id = 'person-' + name,
-            editor;
-
         async.parallel({
             schema: function(cb) {
                 couchr.get('_ddoc/_show/person_schema', cb);
             },
             person: function(cb) {
-                couchr.get('_db/' + person_id, function(err, person){
-                    if (err && err.status === 404) return cb(null);
-                    return cb(err, person);
-                });
+                couchr.get('_ddoc/_view/people_by_tag', {key: '"' + name + '"', include_docs: true}, cb);
             }
         }, function(err, results){
+
+
+            var rows = results.person[0].rows,
+                schema = results.schema[0],
+                person = {},
+                editor;
+
+
+            if (rows.length > 1) return showDisambiguationPage(name, rows);
+            if (rows.length == 1) person = rows[0].doc;
+
             $(selector).find('.person-content').html(form_t());
-            editor = JsonEdit('app_settings_schema', results.schema[0]);
+
+            if (person) {
+                schema['default'] = person;
+            }
+
+            editor = JsonEdit('app_settings_schema', schema);
+
+
+            $('form').on('submit', function(){
+                try {
+                    var btn = $('button.save');
+                    btn.button('saving');
+                    var err_alert = $('.alert');
+                    err_alert.hide(10);
+
+                    var form = editor.collect();
+                    if (!form.result.ok) {
+
+                       err_alert.show(200)
+                           .find('button.close')
+                           .on('click', function () { err_alert.hide(); });
+                       err_alert.find('h4')
+                            .text(form.result.msg);
+                       return false;
+                    }
+
+                    person = _.extend(person, form.data);
+                    person.type = 'person';
+                    person.tag = name;
+                    if (person._rev) couchr.put('_db/' + person._id, person, saveComplete);
+                    else couchr.post('_db/', person, saveComplete);
+
+                } catch(e) {  }
+               return false;
+            });
+
         });
     }
+
+    function saveComplete(err, resp) {
+
+    }
+
+
 
     function viewInteractions(name) {
         showNav(name, 'interactions');

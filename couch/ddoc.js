@@ -178,6 +178,13 @@ exports.views.people_by_interaction = {
     reduce: '_count'
 };
 
+exports.views.people_by_tag = {
+    map: function(doc) {
+        if (doc.type === 'person') {
+            emit(doc.tag, null);
+        }
+    }
+};
 
 exports.shows["tray.jnlp"] = function(doc, req) {
     var dd = req.path[2];
