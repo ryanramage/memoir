@@ -160,7 +160,7 @@ exports.views.audio_md5s = {
 };
 
 
-exports.views.people = {
+exports.views.people_by_interaction = {
     map: function(doc) {
         var _ = require('views/lib/underscore')._;
         var tt = require('views/lib/twitter-text');
@@ -171,7 +171,7 @@ exports.views.people = {
             var names = _.map(tt.extractMentions(doc.entry), function(name){ return name.toLowerCase(); });
             var people = _.uniq(names);
             _.each(people, function(person){
-                emit([person, timestamp], null);
+                emit([person, timestamp], {type: 'journal'});
             });
         }
     },
@@ -268,6 +268,14 @@ exports.shows.app_settings = function(doc, req) {
 
 exports.shows.app_config = function(doc, req) {
     var data =  this.kanso.config.settings_schema || {};
+    return {
+        'headers' : {'Content-Type' : 'application/json'},
+        'body' :  JSON.stringify(data)
+    };
+};
+
+exports.shows.person_schema = function(doc, req) {
+    var data = doc || this.kanso.config.person_schema;
     return {
         'headers' : {'Content-Type' : 'application/json'},
         'body' :  JSON.stringify(data)

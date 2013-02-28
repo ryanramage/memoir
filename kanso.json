@@ -78,6 +78,43 @@
             }
         }
     },
+    "person_schema": {
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "object",
+                "properties": {
+                    "first" : {
+                        "title": "First Name",
+                        "type": "string"
+                    },
+                    "last": {
+                        "title": "Last Name",
+                        "type": "string"
+                    }
+                }
+            },
+            "birthday": {
+                "type": "object",
+                "properties": {
+                    "month": {
+                        "type": "string",
+                        "enum": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+                    },
+                    "day": {
+                        "type": "number",
+                        "minimum": 1,
+                        "maximum": 31
+                    },
+                    "year": {
+                        "type": "number",
+                        "minimum": 1,
+                        "maximum": 9999
+                    }
+                }
+            }
+        }
+    },
     "dependencies": {
         "modules": null,
         "attachments": null,

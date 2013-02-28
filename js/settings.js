@@ -18,7 +18,6 @@ define(['jquery', 'underscore', 'couchr', 'async', 'json.edit', 'hbt!templates/s
         couchr.get('./_ddoc/_show/app_config', function(err, schema) {
 
             couchr.get('./_ddoc/_show/app_settings/app_settings', function(err, app_settings){
-                console.log(err, app_settings);
                 last_app_settings = app_settings;
 
                 if (app_settings) {

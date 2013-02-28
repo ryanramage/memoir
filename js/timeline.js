@@ -41,6 +41,7 @@ define('js/timeline',[
 
     exports.time = function(textDate) {
         options.emitter.emit('section', 'timeline');
+        $(selector).html(timeline_t());
         var initialDate = date_utils.parseDate(textDate);
         var scale_info = scales.getToScaleInfo(initialDate, scales.week);
         createTimeline(initialDate, scale_info);
@@ -72,9 +73,9 @@ define('js/timeline',[
 
 
        return  {
-           '/timeline' : exports.now,
-           '/timeline/(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2})' : exports.time,
-           '/timeline/(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2})/(\\d+)' : exports.time_and_zoom
+        '/timeline/(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2})/(\\d+)' : exports.time_and_zoom,
+        '/timeline/(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2})' : exports.time,
+        '/timeline' : exports.now
         };
     };
 
