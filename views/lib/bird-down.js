@@ -1,6 +1,6 @@
 (function (root, factory) {
     if (typeof exports === 'object') {
-        module.exports = factory(require('twitter-text'), require('marked-bird-down'));
+        module.exports = factory(require('./twitter-text'), require('./marked'));
     } else if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
         define(['twitter-text', 'marked-bird-down'], factory);
@@ -57,7 +57,30 @@
                 after;
         }
         return str;
-    }
+    };
+
+    birddown.prototype.extractLocalTopics = function(str) {
+        var results = [];
+        var match, re = new RegExp('\\[\\[([^\\]]+)\\]\\]');
+        while (match = re.exec(str)) {
+            var before = str.substr(0, match.index)
+            var after = str.substr(match.index + match[0].length)
+            var text = match[1].replace(/_/g, ' ');
+            var target = match[1].split('#');
+            var pageid = encodeURIComponent(target[0]);
+            var anchor = target.length > 1 ?
+                '#' + encodeURIComponent(target.slice(1).join('#')):
+                '';
+            str = before +
+                '[' + escapeMarkdown(text) + ']' +
+                '(' + this.settings.doublebracketsUrlBase  + pageid + anchor + ')' +
+                after;
+            results.push(text);
+        }
+        return results;
+    };
+
+
 
     birddown.prototype.parse = function(str) {
         var temp = str;
