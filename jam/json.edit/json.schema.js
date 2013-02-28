@@ -456,6 +456,10 @@
             return mResult(false, "field '" + name + "' " + msg, data);
         }
 
+        if (!required && value === null) {
+            return mResult(true);
+        }
+
         if (typeof value !== "number") {
             return failed(notType || errs.NOT_NUMBER);
         }

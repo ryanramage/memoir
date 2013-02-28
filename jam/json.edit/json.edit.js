@@ -313,7 +313,7 @@
                     newSchema = schema;
                 }
 
-                value = priv.collectField(key, field, newSchema);
+                value = priv.collectField(key, field, newSchema, required);
             }
 
 
@@ -349,16 +349,16 @@
         return {result: result, data: data};
     };
 
-    priv.collectField = function (key, field, schema) {
+    priv.collectField = function (key, field, schema, required) {
         var hint = schema['je:hint'], hints = defaults.hintedCollectors,
             type = schema.type || getType(schema);
 
         if (hint && hints[type] && hints[type][hint]) {
             return hints[type][hint](key, field, schema, priv);
         } else if (defaults.collectors[type]) {
-            return defaults.collectors[type](key, field, schema);
+            return defaults.collectors[type](key, field, schema, required);
         } else {
-            return defaults.collectors.default_(key, field, schema);
+            return defaults.collectors.default_(key, field, schema, required);
         }
     };
 
@@ -904,12 +904,14 @@
         return result;
     };
 
-    defaults.collectors.number = function (name, field, schema) {
+    defaults.collectors.number = function (name, field, schema, required) {
         var value, strValue = priv.getChildrenOrSelf(field, "input").val();
-
+        if (strValue === "") {
+            return {result: priv.validateJson(name, null, schema, required), data: null};
+        }
         try {
             value = JSON.parse(strValue);
-            return {result: priv.validateJson(name, value, schema), data: value};
+            return {result: priv.validateJson(name, value, schema, required), data: value};
         } catch (error) {
             return {
                 result: priv.collectResult(false, "invalid format", {
