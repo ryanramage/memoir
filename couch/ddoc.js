@@ -215,6 +215,19 @@ exports.views.topics_by_interaction = {
     reduce: '_count'
 };
 
+exports.views.journal_entries = {
+    map : function(doc) {
+        if (doc.type === 'journal') {
+            var size = 0;
+            if (doc.entry) {
+                size = doc.entry.length;
+            }
+            emit(doc._id, size);
+
+        }
+    }
+};
+
 exports.shows["tray.jnlp"] = function(doc, req) {
     var dd = req.path[2];
 
