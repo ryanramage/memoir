@@ -1,0 +1,21 @@
+
+<h4>Ready to upload</h4>
+<ul>
+    <li>Recordings To upload: {{recordings.ok.length}}</li>
+    <li>Marks found: {{marks.length}}</li>
+    <li>Total Audio: {{audio_duration}}</li>
+    <li>
+        Problem Recordings: {{recordings.error.length}}
+        <ul>
+        {{#each recordings.error}}
+            <li>{{file.name}}</li>
+        {{/each}}
+        </ul>
+    </li>
+
+
+</ul>
+
+<div>
+    <button class="btn primary large finish">Upload</button>
+</div>

@@ -2045,7 +2045,7 @@ var jam = {
         {
             "name": "async",
             "location": "jam/async",
-            "main": "./lib/async"
+            "main": "lib/async.js"
         },
         {
             "name": "bird-down",
@@ -2137,9 +2137,19 @@ var jam = {
             "main": "./lib/marked.js"
         },
         {
+            "name": "md5",
+            "location": "jam/md5",
+            "main": "md5.js"
+        },
+        {
             "name": "moment",
             "location": "jam/moment",
             "main": "moment.js"
+        },
+        {
+            "name": "simple-uuid",
+            "location": "jam/simple-uuid",
+            "main": "uuid.js"
         },
         {
             "name": "spin-js",
