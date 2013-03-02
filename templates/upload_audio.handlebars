@@ -1,14 +1,43 @@
 
 
+<ul class="breadcrumb">
+  <li><a href="#/upload">Upload</a> <span class="divider">/</span></li>
+  <li class="active">Liferecorder</li>
+</ul>
 
-<input  id="fileUploader" type="file" multiple accept="audio/mp3">
+<div class="audio_wizard">
 
 
-<div class="processing_status hide">
-    <h4>Analyzing Files</h4>
-    <div class="progress progress-striped active">
-      <div class="bar" style="width: 0%;"></div>
+
+
+    <div class="well">
+        <h3>Step 1: Choose Files</h3>
+        <input  id="fileUploader" type="file" multiple accept="audio/mp3">
+        <div class="alert alert-info">
+            Select all the mp3 files in RECORD/VOICE on the <a href="http://eckoit.com">liferecorder</a>.
+        </div>
     </div>
-</div>
 
-<div class="upload_confirm"></div>
+
+
+    <div class="upload_confirm"></div>
+
+    <div class="upload_finished well hide">
+        <h3>Step 3: Upload complete </h3>
+        You might want to:
+        <ul>
+            <li>Delete the files in RECORD/VOICE to free the space.</li>
+            <li><a class="first_date_link">Listen to the start of the audio</a></li>
+        </ul>
+    </div>
+
+
+    <div class="processing_status hide">
+        <h4>Analyzing Files</h4>
+        <div class="progress progress-striped active">
+          <div class="bar" style="width: 0%;"></div>
+        </div>
+    </div>
+
+
+</div>

@@ -1,23 +1,27 @@
 
-<h4>Ready to upload</h4>
-<ul>
-    <li>Recordings To upload: {{recordings.ok.length}}</li>
-    <li>Marks found: {{marks.length}}</li>
-    <li>Total Audio: about {{audio_duration_str}}</li>
+<div class="well">
 
-    {{#if recordings.error}}
-    <li>
-        Problem Recordings: {{recordings.error.length}}
-        <ul>
-        {{#each recordings.error}}
-            <li>{{file.name}}</li>
-        {{/each}}
-        </ul>
-    </li>
-    {{/if}}
+    <h3>Step 2: Confirm Upload</h3>
+    <ul>
+        <li>Recordings To upload: {{recordings.ok.length}}</li>
+        <li>Marks found: {{marks.length}}</li>
+        <li>Total Audio: about {{audio_duration_str}}</li>
 
-</ul>
+        {{#if recordings.error}}
+        <li>
+            Problem Recordings: {{recordings.error.length}}
+            <ul>
+            {{#each recordings.error}}
+                <li>{{file.name}}</li>
+            {{/each}}
+            </ul>
+        </li>
+        {{/if}}
 
-<div>
-    <button class="btn primary large finish">Upload</button>
+    </ul>
+
+    <div>
+        <button class="btn btn-primary btn-large finish">Upload</button>
+    </div>
+
 </div>

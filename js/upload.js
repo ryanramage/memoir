@@ -57,19 +57,27 @@ define([
 
     function confirm_upload(details) {
 
-        $('.processing_status .progress').removeClass('active progress-striped');
+        $('.processing_status').hide();
 
         var audio_duration = 0;
+        var first_date = null;
         _.each(details.recordings.ok, function(recording){
             audio_duration += recording.duration;
+            if (!first_date) first_date = recording.start_date;
+            if (recording.start_date.valueOf() < first_date.valueOf()) first_date = recording.start_date;
         });
         details.audio_duration = audio_duration;
+        details.first_date = first_date;
 
         details.audio_duration_str = moment.duration(Math.round(audio_duration), 'seconds').humanize();
 
         $('.upload_confirm').html(upload_confirm_t(details));
         $('button.finish').on('click', function(){
             $(this).hide();
+
+            $('.processing_status .bar').css('width', '0%');
+            $('.processing_status').show();
+            $('.processing_status h4').text('Uploading Files');
             finish_upload(details);
         });
     }
@@ -80,7 +88,12 @@ define([
         progressTotal = (details.recordings.ok.length * 2); // 1 for doc, 1 for attach
 
         async.eachLimit(details.recordings.ok, 2, upload_to_couch, function(err){
-            console.log(err);
+            $('.upload_finished').show();
+            $('.processing_status').hide();
+
+            var first_date_link = '#/timeline/' + details.first_date.format('YYYY-MM-DDTHH:mm:ss');
+            $('a.first_date_link').attr('href', first_date_link);
+
         });
     }
 
