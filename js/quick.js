@@ -252,6 +252,7 @@ define('js/quick', [
 
     function show_settings_messgage() {
       $('#lifestream').html('No services. Please add them in your <a href="#/settings">settings</a>.');
+      $('.load-status').html('');
     }
 
 
@@ -277,10 +278,11 @@ define('js/quick', [
           top: 0, // Top position relative to parent in px
           left: 0 // Left position relative to parent in px
         };
-        var spinner = new Spinner.Spinner(spinner_opts).spin(target);
+
 
         couchr.get('_ddoc/_show/app_settings/app_settings', function(err, ddoc_settings) {
           if (!ddoc_settings || !ddoc_settings.Services) return show_settings_messgage();
+          var spinner = new Spinner.Spinner(spinner_opts).spin(target);
           var settings = {
             list: ddoc_settings.Services
           };
