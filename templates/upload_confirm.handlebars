@@ -3,7 +3,9 @@
 <ul>
     <li>Recordings To upload: {{recordings.ok.length}}</li>
     <li>Marks found: {{marks.length}}</li>
-    <li>Total Audio: {{audio_duration}}</li>
+    <li>Total Audio: about {{audio_duration_str}}</li>
+
+    {{#if recordings.error}}
     <li>
         Problem Recordings: {{recordings.error.length}}
         <ul>
@@ -12,7 +14,7 @@
         {{/each}}
         </ul>
     </li>
-
+    {{/if}}
 
 </ul>
 

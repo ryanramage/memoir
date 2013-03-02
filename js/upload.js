@@ -26,6 +26,7 @@ define([
     };
 
     function audio() {
+        options.emitter.emit('section', 'upload');
         $(selector).html(audio_t());
 
         $('#fileUploader').on('change', function() { handleFiles(this.files); }   );
@@ -50,6 +51,7 @@ define([
     }
 
     function wizard() {
+        options.emitter.emit('section', 'upload');
         $(selector).html(wizard_t());
     }
 
@@ -62,6 +64,8 @@ define([
             audio_duration += recording.duration;
         });
         details.audio_duration = audio_duration;
+
+        details.audio_duration_str = moment.duration(Math.round(audio_duration), 'seconds').humanize();
 
         $('.upload_confirm').html(upload_confirm_t(details));
         $('button.finish').on('click', function(){
