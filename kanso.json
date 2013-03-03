@@ -32,23 +32,13 @@
     "jam" : {
         "include" : [
             "js/app",
-            "js/AudioTrack",
-            "js/date_utils",
-            "js/ImageTrack",
-            "js/JournalTrack",
-            "js/position",
-            "js/quick",
-            "js/reference",
-            "js/scales",
-            "js/ScrapbookTrack",
-            "js/ServiceTrack",
-            "js/TagTrack",
             "js/timeline",
-            "js/Track",
             "domReady",
+            "jam/bootstrap/js/bootstrap-button",
             "jam/bootstrap/js/bootstrap-tooltip",
             "jam/bootstrap/js/bootstrap-popover"
-        ]
+        ],
+        "target" : "jam/require.js"
     },
     "settings_schema" : {
         "description": "My-Path Settings",

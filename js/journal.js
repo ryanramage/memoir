@@ -1,10 +1,11 @@
 define(['jquery', 'underscore', 'couchr', 'async',
     'bird-down',
+    'cal-heatmap',
     'js/reference',
     'hbt!templates/journal_all',
     'hbt!templates/journal_view'
     ],
-function($, _, couchr, async, birddown, reference, all_t, view_t){
+function($, _, couchr, async, birddown, CalHeatmap, reference, all_t, view_t){
     var exports = {};
 
     var selector = '.main';
@@ -122,6 +123,33 @@ function($, _, couchr, async, birddown, reference, all_t, view_t){
         options.emitter.emit('section', 'journal');
         couchr.get('_ddoc/_view/journal_entries', {descending: true}, function(err, results){
             $(selector).html(all_t(results.rows));
+
+            var cal = new CalHeatMap();
+
+            var entries = {};
+
+            _.each(results.rows, function(row){
+                var d = moment(row.id, "YYYY-MM-DD");
+                entries[d.unix()] = row.value;
+            });
+            console.log(entries);
+
+            var start = moment().subtract('days', 330);
+
+
+            cal.init({
+                domain: 'month',
+                cellsize: 15,
+                subDomain: 'day',
+                data: entries,
+                start: start.toDate(),
+                scales: [500, 100, 2000, 5000],
+                onClick: function(date) {
+                    var d = moment(date).format("YYYY-MM-DD");
+                    window.location = '#/journal/' + d;
+                }
+            });
+
         });
     }
 

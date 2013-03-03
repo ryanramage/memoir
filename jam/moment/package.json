@@ -1,22 +1,35 @@
 {
     "name": "moment",
-    "version": "1.6.2-jam.1",
-    "description": "Moment.js is a javascript date library that helps create, manipulate, and format dates without extending the `Date` prototype.",
-    "homepage": "https://github.com/timrwood/moment",
+    "version": "1.7.2-jam.1",
+    "description": "Parse, manipulate, and display dates.",
+    "homepage": "http://momentjs.com",
     "author": "Tim Wood <washwithcare@gmail.com> (http://timwoodcreates.com/)",
+    "contributors": [
+        "Rocky Meza (http://rockymeza.com)"
+    ],
     "keywords": [
         "moment",
         "date",
+        "time",
+        "parse",
+        "format",
+        "validate",
+        "i18n",
+        "l10n",
         "ender"
     ],
-    "main": "moment.js",
+    "jam":{
+    	"main":"moment.js"
+    },
+    "categories": ["Utilities"],
+    "main": "./moment.js",
     "engines": {
         "node": "*"
     },
-    "repositories": [{
+    "repository": {
         "type": "git",
         "url": "https://github.com/timrwood/moment.git"
-    }],
+    },
     "bugs": {
         "url": "https://github.com/timrwood/moment/issues"
     },
@@ -28,10 +41,10 @@
     "devDependencies" : {
         "jshint"    : "latest",
         "uglify-js" : "latest",
-        "nodeunit"     : "latest"
+        "nodeunit"  : "latest"
     },
     "scripts": {
-        "test": "nodeunit ./test/moment ./test/lang"
+        "test": "make test"
     },
     "ender": "./ender.js"
 }

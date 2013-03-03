@@ -2057,6 +2057,11 @@ var jam = {
             "location": "jam/bootstrap"
         },
         {
+            "name": "cal-heatmap",
+            "location": "jam/cal-heatmap",
+            "main": "cal-heatmap.js"
+        },
+        {
             "name": "Class",
             "location": "jam/Class",
             "main": "class.js"
@@ -2069,7 +2074,7 @@ var jam = {
         {
             "name": "d3",
             "location": "jam/d3",
-            "main": "d3.v2.js"
+            "main": "d3.js"
         },
         {
             "name": "director",

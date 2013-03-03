@@ -1,3 +1,3 @@
 production :
-	kanso push my-path2;
+	kanso push my-path;
 
