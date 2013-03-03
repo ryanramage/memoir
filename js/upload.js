@@ -180,7 +180,7 @@ define([
                 rwi.setError(true);
                 updateProgress(rwi, callback);
             }
-        }, 3000);
+        }, 5000);
 
     }
 
