@@ -121,6 +121,9 @@ define('js/quick', [
        selection.removeAllRanges();
        selection.addRange(range);
        range.insertNode(document.createTextNode(postfix));
+
+       editor.save();
+       $('button.save').removeAttr("disabled").removeClass('disabled');
     }
 
 
@@ -216,6 +219,7 @@ define('js/quick', [
             $(selector).find('.references').html(reference_sheet.html);
             $('button.cite').on('click',function(){
                 cite($(this), editor);
+                editor.save();
             });
             $('button.bold').on('click', function(){
                 markup(editor, '**', '**');
