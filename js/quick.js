@@ -159,14 +159,9 @@ define('js/quick', [
             file: {
                 name: save_date_str,
                 defaultContent: '',
-                autoSave: 1000
+                autoSave: false
             }
         }).load();
-
-        editor.on('update', function(){
-            // feels dirty, show state.
-            $('button.save').removeAttr("disabled").removeClass('disabled');
-        });
 
 
         var timeline_query = {
@@ -194,9 +189,20 @@ define('js/quick', [
             }
         }, function(err, data){
 
+            var last_rev = null;
+            if (data.journal && data.journal._rev) {
+              last_rev = data.journal._rev;
+            }
+
             if (data.journal && data.journal.entry) {
                 editor.importFile('epiceditor',data.journal.entry);
+
             }
+
+            editor.getElement('editor').addEventListener('input', function(){
+                // feels dirty, show state.
+                $('button.save').removeAttr("disabled").removeClass('disabled');
+            });
 
             var reference_sheet = reference.createReferenceSheet(data);
             reference_sheet_json = reference_sheet.references;
@@ -219,25 +225,20 @@ define('js/quick', [
             });
 
             $('button.save').on('click', function(){
-                $('button.save').button('loading');
-                editor.save();
-                var content = editor.exportFile();
-                couchr.put('_journal/' + save_date_str + '/update', {entry : content }, function(err, resp){
-                    //editor.save();
-                    if (resp === 'no journal to update') {
-                      var doc = {
-                        _id: save_date_str,
-                        type: 'journal',
-                        entry: content
-                      };
-                       couchr.put('_db/' + save_date_str, doc, function(err, resp){
-                          console.log(err, resp);
-                          resetSaveButton();
-                       });
-                    } else {
-                      resetSaveButton();
-                    }
-                });
+              $('button.save').button('loading');
+              editor.save();
+              var doc = {
+                _id: save_date_str,
+                type: 'journal',
+                entry: editor.exportFile()
+              };
+              if (last_rev) doc._rev = last_rev;
+              couchr.put('_db/' + save_date_str, doc, function(err, resp){
+                if (err) return alert('File did not save!');
+                last_rev = resp.rev;
+                resetSaveButton();
+              });
+
             });
 
         });
