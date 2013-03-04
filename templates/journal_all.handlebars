@@ -3,13 +3,17 @@
 </ul>
 
 
-<h2>Journal</h2>
+<div class="journal_header">
+    <a class="left" href="#/journal/year/{{prev_year}}">&#9668;</a>
+    <a class="right" href="#/journal/year/{{next_year}}">&#9658;</a>
+    <h2>{{display_year}}</h2>
 
+</div>
 
 <div id="cal-heatmap"></div>
 
-<ul>
-{{#each .}}
+<ul class="journal_rows">
+{{#each rows}}
     <li><a href="#/journal/{{key}}">{{key}}</a></li>
 {{/each}}
 </li>

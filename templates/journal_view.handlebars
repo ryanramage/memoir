@@ -1,3 +1,4 @@
+
 <ul class="breadcrumb">
   <li><a href="#/journal">Journal</a> <span class="divider">/</span></li>
   <li class="active">{{str_date}}</li>
@@ -5,12 +6,16 @@
 
 
 
+<div class="journal_header">
+    <a class="prev left" >&#9668;</a>
+    <a class="next right">&#9658;</a>
+    <h2>{{str_date}}</h2>
+
+</div>
+
 <div class="journal-entry">
 
     <div class="journal-sheet">
-        <a class="prev hide">Prev</a>
-        <a class="next hide">Next</a>
-        <h2>{{str_date}}</h2>
         <div class="entry">
             {{{markup}}}
         </div>

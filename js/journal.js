@@ -76,12 +76,11 @@ function($, _, couchr, async, birddown, CalHeatmap, reference, all_t, view_t){
             getNextAndPrevEntry(date, function(err, results){
                 if (err) return;
 
-                if (results.next) {
-                    $('.next').attr('href', '#/journal/' + results.next).show();
-                }
-                if (results.prev) {
-                    $('.prev').attr('href', '#/journal/' + results.prev).show();
-                }
+                if (results.next) $('.next').attr('href', '#/journal/' + results.next).show();
+                else $('.next').hide();
+
+                if (results.prev) $('.prev').attr('href', '#/journal/' + results.prev).show();
+                else $('.prev').hide();
 
             });
         });
@@ -119,10 +118,42 @@ function($, _, couchr, async, birddown, CalHeatmap, reference, all_t, view_t){
 
 
 
-    function all() {
+    function year(year_str) {
         options.emitter.emit('section', 'journal');
-        couchr.get('_ddoc/_view/journal_entries', {descending: true}, function(err, results){
-            $(selector).html(all_t(results.rows));
+
+        var date = moment();
+        if (year_str) {
+            date = moment('Jan 1, ' + year_str);
+        }
+
+        var display_year = date.format('YYYY');
+        var next_year = moment(date).add('y', 1).format('YYYY');
+        var prev_year = moment(date).subtract('y', 1).format('YYYY');
+
+        var start = date.startOf('year');
+        var end = moment(start).endOf('year');
+        //var end = date.endOf('year');
+
+
+
+
+        var query = {
+            descending: true,
+            endkey: '"' + start.format('YYYY-MM-DD') + '"',
+            startkey: '"' +  end.format('YYYY-MM-DD') + '"'
+        };
+
+
+        couchr.get('_ddoc/_view/journal_entries', query, function(err, results){
+            var toShow = {
+                rows: results.rows,
+                display_year: display_year,
+                next_year: next_year,
+                prev_year: prev_year
+            };
+
+
+            $(selector).html(all_t(toShow));
 
             var cal = new CalHeatMap();
 
@@ -132,9 +163,6 @@ function($, _, couchr, async, birddown, CalHeatmap, reference, all_t, view_t){
                 var d = moment(row.id, "YYYY-MM-DD");
                 entries[d.unix()] = row.value;
             });
-            console.log(entries);
-
-            var start = moment().subtract('days', 330);
 
 
             cal.init({
@@ -155,8 +183,9 @@ function($, _, couchr, async, birddown, CalHeatmap, reference, all_t, view_t){
 
     exports.routes = function() {
        return  {
+            '/journal/year/*' : year,
             '/journal/*': view,
-            '/journal' : all
+            '/journal' : year
         };
     };
 
