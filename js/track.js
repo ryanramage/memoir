@@ -28,7 +28,7 @@ define('js/Track', ['underscore', 'Class', 'd3'], function (_, Class, d3) {
                     .attr("y1", me.settings.y + me.settings.height)
                     .attr("x2", me.chart_details.width)
                     .attr("y2", me.settings.y + me.settings.height)
-                    .attr("class", "track-border")
+                    .attr("class", "track-border");
 
 
         },
@@ -36,7 +36,7 @@ define('js/Track', ['underscore', 'Class', 'd3'], function (_, Class, d3) {
             this.x = x_scale;
         },
         distroy: function() {
-            
+
         }
     });
 });
