@@ -8,9 +8,6 @@
     <meta name="author" content="">
 
     <!-- Le styles -->
-    <link href="css/app.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="jam/json.edit/json.edit.bootstrap.css" />
-    <link rel="stylesheet" type="text/css" href="jam/cal-heatmap/cal-heatmap.css" />
     <link rel="shortcut icon" href="img/favicon.ico">
 
   </head>
@@ -83,21 +80,33 @@
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="jam/require.js"></script>
-    <script>
-      require(['js/app', 'domReady', 'jquery'], function (app, domReady, $) {
-        window.$ = $;
-        // the topbar needed jquery to be loaded.
-        app.init();
+    <script type="text/javascript">
+      function load(){
 
-        // the bootstrap jquery
-        require(['jam/bootstrap/js/bootstrap-tooltip.js', 'jam/bootstrap/js/bootstrap-button.js'], function(){
-           require(['jam/bootstrap/js/bootstrap-popover.js'], function(){
-               domReady(app.on_dom_ready);
-           })
+        require(['js/app', 'domReady', 'jquery'], function (app, domReady, $) {
+          window.$ = $;
+          // the topbar needed jquery to be loaded.
+          app.init();
+
+          // the bootstrap jquery
+          if ($.fn.popover) return domReady(app.on_dom_ready);
+
+          require(['jam/bootstrap/js/bootstrap-tooltip.js', 'jam/bootstrap/js/bootstrap-button.js'], function(){
+             require(['jam/bootstrap/js/bootstrap-popover.js'], function(){
+                domReady(app.on_dom_ready)
+             })
+          });
         });
-      });
+
+      }
+      function loadDev(){
+          var script = document.createElement("script");
+          script.src = 'jam/require.js';
+          script.onload = load;
+          document.head.appendChild( script );
+      }
     </script>
-    <script type="text/javascript" src="js/topbar.min.js"></script>
+    <script src="jam/require.prod.js" onerror="loadDev()" onload="load()"></script>
+    <script src="/dashboard/_design/dashboard/_rewrite/static/js/topbar.js"></script>
   </body>
 </html>

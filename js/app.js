@@ -10,7 +10,9 @@ define('js/app',[
     'js/people',
     'js/topics',
     'js/journal',
-    'js/upload'
+    'js/upload',
+
+    'css/css'
 ],
 function($, garden, director, events, quick, position, timeline, settings, people, topics, journal, upload){
     var exports = {};

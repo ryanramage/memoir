@@ -1,0 +1,13 @@
+[
+    { "description": "Access to this database" , "from": "_db" , "to"  : "../.." },
+    { "from": "_db/*" , "to"  : "../../*" },
+    { "description": "Access to this design document" , "from": "_ddoc" , "to"  : "" },
+    { "from": "_ddoc/*" , "to"  : "*"},
+    { "description": "Access to the main CouchDB API", "from": "_couchdb" , "to"  : "../../.."},
+    { "from": "_couchdb/*" , "to"  : "../../../*"},
+    { "from" : "_journal/:date/update", "to" : "_update/journal/:date", "method": "PUT"},
+    {"from" : "_journal/:date", "to" : "../../:date"},
+    {"from": "/", "to": "index.html"},
+    {"from":"/tray.jnlp", "to":"_show/tray.jnlp"},
+    {"from": "/*", "to": "*"}
+]

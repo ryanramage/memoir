@@ -1,0 +1,36 @@
+{
+       "type": "object",
+        "properties": {
+            "first_name" : {
+                "title": "First Name",
+                "type": "string"
+            },
+            "last_name": {
+                "title": "Last Name",
+                "type": "string"
+            },
+            "email": {
+                "title": "Email",
+                "type": "string"
+            },
+            "birthday": {
+                "type": "object",
+                "properties": {
+                    "month": {
+                        "type": "string",
+                        "enum": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+                    },
+                    "day": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 31
+                    },
+                    "year": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 9999
+                    }
+                }
+            }
+        }
+}
