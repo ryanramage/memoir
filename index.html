@@ -88,6 +88,8 @@
           // the topbar needed jquery to be loaded.
           app.init();
 
+          require(['/dashboard/_design/dashboard/_rewrite/static/js/topbar.js']);
+
           // the bootstrap jquery
           if ($.fn.popover) return domReady(app.on_dom_ready);
 
@@ -107,6 +109,5 @@
       }
     </script>
     <script src="jam/require.prod.js" onerror="loadDev()" onload="load()"></script>
-    <script src="/dashboard/_design/dashboard/_rewrite/static/js/topbar.js"></script>
   </body>
 </html>

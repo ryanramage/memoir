@@ -2018,7 +2018,7 @@ var jam = {
         {
             "name": "cal-heatmap",
             "location": "jam/cal-heatmap",
-            "main": "cal-heatmap.js"
+            "main": "cal-heatmap.min.js"
         },
         {
             "name": "Class",
@@ -2187,7 +2187,7 @@ if (typeof require !== "undefined" && require.config) {
         {
             "name": "cal-heatmap",
             "location": "jam/cal-heatmap",
-            "main": "cal-heatmap.js"
+            "main": "cal-heatmap.min.js"
         },
         {
             "name": "Class",
@@ -2355,7 +2355,7 @@ else {
         {
             "name": "cal-heatmap",
             "location": "jam/cal-heatmap",
-            "main": "cal-heatmap.js"
+            "main": "cal-heatmap.min.js"
         },
         {
             "name": "Class",

@@ -12,9 +12,6 @@ module.exports = function(grunt) {
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
-        qunit: {
-            files: ["test/index.html", "test/index-amd.html"]
-        },
         jshint: {
             options: {
                 jshintrc: ".jshintrc"
@@ -39,15 +36,17 @@ module.exports = function(grunt) {
                 }
             }
         },
-        "qunit-cov": {
-            test:
-            {
-                minimum: 0.85,
-                srcDir: "src",
-                depDirs: ["test"],
-                outDir: "jscoverage",
-                testFiles: ["test/index.html"]
-            }
+        qunit: {
+            options: {
+                "--web-security": "no",
+                coverage: {
+                    src: ["src/*.js"],
+                    instrumentedFiles: "temp/",
+                    htmlReport: "report/coverage",
+                    coberturaReport: "report/"
+                }
+            },
+            all: ["test/*.html"]
         },
         concat: {
             options: {
@@ -63,20 +62,19 @@ module.exports = function(grunt) {
 
 
     grunt.loadNpmTasks("grunt-contrib-jshint");
-    grunt.loadNpmTasks("grunt-contrib-qunit");
     grunt.loadNpmTasks("grunt-contrib-uglify");
     grunt.loadNpmTasks("grunt-css");
-    grunt.loadNpmTasks("grunt-qunit-cov");
+    grunt.loadNpmTasks("grunt-qunit-istanbul");
     grunt.loadNpmTasks("grunt-bump");
     //grunt.loadNpmTasks("grunt-replace");
     grunt.loadNpmTasks("grunt-contrib-concat");
 
     // TO RUN BEFORE COMMIT
     // ====================
-    grunt.registerTask("quick-build", ["concat", "jshint", "csslint", "uglify"]);
+    grunt.registerTask("quick-build", ["jshint", "csslint"]);
 
     // Full build without version bump
-    grunt.registerTask("build", ["concat", "qunit", "qunit-cov", "jshint", "csslint", "uglify"]);
+    grunt.registerTask("build", ["concat", "qunit", "jshint", "csslint", "uglify"]);
 
     // FOR TRAVIS
     // ==========

@@ -5,7 +5,7 @@ define(['jquery', 'underscore', 'couchr', 'async',
     'hbt!templates/journal_all',
     'hbt!templates/journal_view'
     ],
-function($, _, couchr, async, birddown, CalHeatmap, reference, all_t, view_t){
+function($, _, couchr, async, birddown, CalHeatMap, reference, all_t, view_t){
     var exports = {};
 
     var selector = '.main';
