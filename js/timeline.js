@@ -336,7 +336,7 @@ define([
         var play_date = new Date( d3.mean(range, function(d){ return d.getTime();  }));
         audio_controller.play( play_date );
     };
-    var play_audio_debounced = _.debounce(play_audio, 0);
+    var play_audio_debounced = _.debounce(play_audio, 500);
 
     function zoom(play_audio) {
         var range = x.domain();
@@ -353,8 +353,6 @@ define([
     }
     function redrawToDates(scale_info) {
 
-        console.log('redraw dates');
-        console.log(scale_info);
 
         x.domain([scale_info.left_date, scale_info.right_date]);
 
