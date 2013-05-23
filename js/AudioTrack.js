@@ -125,7 +125,9 @@ function (Track, Class, couchr, _, Spinner, scales, audio_controller) {
 
         },
         spin: function() {
-            if (!this.spin_showing) this.spinner.spin(document.getElementById('audio-spinner'));
+            if (!this.spin_showing) {
+                this.spinner.spin(document.getElementById('audio-spinner'));
+            }
             this.spin_showing = true;
         },
         spin_off: function() {
@@ -134,7 +136,7 @@ function (Track, Class, couchr, _, Spinner, scales, audio_controller) {
                 // to compensate for some audio delay in starting, this helps user feel better.
                 setTimeout(function(){
                     me.spinner.stop();
-                }, 1500);
+                }, 300);
 
             }
             this.spin_showing = false;
