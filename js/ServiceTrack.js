@@ -70,7 +70,7 @@ function (Track, Class, $, couchr, _, scales) {
 
             me.drawEntriesDebounced = _.debounce(function(){
                 me.getEntries(me.drawEntries);
-            }, 400);
+            }, 1200);
 
         },
         draw: function() {
