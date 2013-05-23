@@ -1,4 +1,4 @@
-define(['underscore', 'couchr', 'events'], function(_, couchr, events){
+define(['jquery', 'underscore', 'couchr', 'events'], function($, _, couchr, events){
 
 	var playlist,
 		current_track,
@@ -6,9 +6,23 @@ define(['underscore', 'couchr', 'events'], function(_, couchr, events){
 		timer,
 		exports = {},
         $player = $('#player1'),
+        $play_btn = $('.play_btn'),
         state = 'unloaded',
+        button_on = false,
         player = $player[0],
         emitter = new events.EventEmitter();
+
+
+    $play_btn.on('click', function(){
+        if (!$play_btn.hasClass('active')) {
+            button_on = true;
+            exports.play();
+        } else {
+            button_on = false;
+            suggested_time = new Date(current_track.key + (player.currentTime * 1000));
+            exports.pause();
+        }
+    });
 
 
     $player.on("timeupdate", function(details){
@@ -53,7 +67,7 @@ define(['underscore', 'couchr', 'events'], function(_, couchr, events){
 	};
 
 	function _update() {
-		if (state != 'playing') return;
+		if (state != 'playing' || !button_on) return;
 		if (player.currentTime === 0) return;
 		var play_date = new Date(current_track.key + (player.currentTime * 1000));
 		var update = {
@@ -83,8 +97,13 @@ define(['underscore', 'couchr', 'events'], function(_, couchr, events){
 	}
 
 
+    exports.pause = function() {
+        player.pause();
+    }
+
 	exports.play = function(date) {
-		if (!date) date = suggested_time;
+        if (!button_on) return;
+		if (!date) date = new Date(suggested_time);
 
 		//player.pause();
 		current_track = find_track_in_playlist(date.getTime());
