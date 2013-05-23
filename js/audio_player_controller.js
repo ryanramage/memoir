@@ -32,7 +32,7 @@ define(['underscore', 'couchr', 'events'], function(_, couchr, events){
     };
 
 
-	exports.get_playlist = function(starttime, endtime, callback) {
+	exports.get_playlist = function(starttime, endtime, scale, callback) {
         var startkey = starttime - (11*60*1000); // get 11 min earlier
 
 

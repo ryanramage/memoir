@@ -8,5 +8,4 @@ define([
     jscss.embed(a);
     jscss.embed(b);
     jscss.embed(c);
-    console.log('css loaded')
 })

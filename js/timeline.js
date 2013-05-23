@@ -352,6 +352,10 @@ define([
         }
     }
     function redrawToDates(scale_info) {
+
+        console.log('redraw dates');
+        console.log(scale_info);
+
         x.domain([scale_info.left_date, scale_info.right_date]);
 
         x_zoom.x(x);//.scaleExtent(scale_info.scale_extent);

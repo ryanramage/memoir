@@ -2,4 +2,4 @@
 
 ./rebuild "$2"
 erica push "$1"
-
+say "deployed"

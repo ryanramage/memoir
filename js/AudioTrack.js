@@ -65,10 +65,12 @@ function (Track, Class, couchr, _, Spinner, scales, audio_controller) {
 
                 var starttime  = domain[0].getTime();
                 var endtime = domain[1].getTime();
-                //var scale = scales.getScale(domain);
+                var scale = scales.getScale(domain);
+
+
                 // if (scale == scales.minute)
                 // TODO - depending on scale, should limit the amount of data coming back
-                audio_controller.get_playlist(starttime, endtime, callback);
+                audio_controller.get_playlist(starttime, endtime, scale, callback);
             };
 
             me.drawEntries = function(err, results) {
