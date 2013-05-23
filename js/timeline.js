@@ -1,4 +1,4 @@
-define('js/timeline',[
+define([
     'jquery',
     'underscore',
     'handlebars',

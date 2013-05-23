@@ -3,7 +3,7 @@
  * Date: 12-10-04
  * Time: 7:32 PM
  */
-define('js/Track', ['underscore', 'Class', 'd3'], function (_, Class, d3) {
+define(['underscore', 'Class', 'd3'], function (_, Class, d3) {
     return Class.design('Track', {
         initialize: function(settings, chart_details) {
             this.settings = settings;

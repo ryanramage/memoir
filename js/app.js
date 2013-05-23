@@ -1,4 +1,4 @@
-define('js/app',[
+define([
     'jquery',
     'garden-app-support',
     'director',

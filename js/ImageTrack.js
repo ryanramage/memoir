@@ -3,7 +3,7 @@
  * Date: 12-10-08
  * Time: 4:26 PM
  */
-define('js/ImageTrack', ['js/Track', 'Class'], function (Track, Class) {
+define(['js/track', 'Class'], function (Track, Class) {
 
 
     var ImageTrack =  Class.design('ImageTrack', {

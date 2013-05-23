@@ -1,4 +1,4 @@
-define('js/date_utils', [
+define([
   'moment'
 ], function(moment){
 

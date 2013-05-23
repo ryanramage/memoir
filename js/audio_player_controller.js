@@ -16,8 +16,10 @@ define(['underscore', 'couchr', 'events'], function(_, couchr, events){
     }).on("ended", function() {
         emitter.emit('ended');
         state = 'ended';
-    }).on("play", function() {
-
+    }).on("waiting", function(){
+        emitter.emit('waiting');
+    }).on("playing", function() {
+        emitter.emit('playing');
     }).on("seeking", function() {
 
         emitter.emit('seeking');
@@ -58,6 +60,7 @@ define(['underscore', 'couchr', 'events'], function(_, couchr, events){
 			time: player.currentTime,
 			date: play_date
 		};
+
 		emitter.emit('progress', update);
 
 	}

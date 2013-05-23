@@ -3,8 +3,8 @@
  * Date: 12-10-08
  * Time: 11:50 AM
  */
-define('js/ServiceTrack', [
-    'js/Track',
+define([
+    'js/track',
     'Class',
     'jquery',
     'couchr',

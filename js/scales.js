@@ -3,7 +3,7 @@
  * Date: 12-10-09
  * Time: 10:29 AM
  */
-define('js/scales', ['d3'], function (d3) {
+define(['d3'], function (d3) {
 
     var scales = {
        'second' : 1000

@@ -3,7 +3,7 @@
  * Date: 12-10-10
  * Time: 5:03 PM
  */
-define('js/reference', [
+define([
     'underscore',
     'underscore.string',
     'moment',

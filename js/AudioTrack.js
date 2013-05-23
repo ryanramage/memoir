@@ -4,7 +4,7 @@
  * Time: 11:49 AM
  */
 define([
-    'js/Track',
+    'js/track',
     'Class',
     'couchr',
     'underscore',
@@ -28,7 +28,9 @@ function (Track, Class, couchr, _, Spinner, scales, audio_controller) {
             audio_emitter.on('seeking',   function(){ me.spin(); } );
             audio_emitter.on('loadstart', function(){ me.spin(); } );
             audio_emitter.on('ended',     function(){ me.spin(); } );
+            audio_emitter.on('waiting',     function(){ me.spin(); } );
             audio_emitter.on('progress',  function(){ me.spin_off(); } );
+            audio_emitter.on('playing',  function(){ me.spin_off(); } );
             me.spin_showing = false;
 
             // add a div to the right of this
@@ -125,7 +127,14 @@ function (Track, Class, couchr, _, Spinner, scales, audio_controller) {
             this.spin_showing = true;
         },
         spin_off: function() {
-            if (this.spin_showing) this.spinner.stop();
+            if (this.spin_showing) {
+                var me = this;
+                // to compensate for some audio delay in starting, this helps user feel better.
+                setTimeout(function(){
+                    me.spinner.stop();
+                }, 1500);
+
+            }
             this.spin_showing = false;
         },
         draw: function() {

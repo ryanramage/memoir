@@ -3,7 +3,7 @@
  * Date: 12-10-08
  * Time: 4:29 PM
  */
-define('js/TagTrack', ['js/Track', 'Class', 'jquery'], function (Track, Class, $) {
+define(['js/track', 'Class', 'jquery'], function (Track, Class, $) {
     var TagTrack = Class.design('TagTrack', {
         Extends: Track,
         initialize : function(settings, chart_details){

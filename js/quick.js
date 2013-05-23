@@ -1,4 +1,4 @@
-define('js/quick', [
+define([
     'jquery',
     'underscore',
     'async',

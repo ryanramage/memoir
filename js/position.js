@@ -1,4 +1,4 @@
-define('js/position', function(){
+define(function(){
     var updateLocation = null;
     var currentPosition = null;
     var callbackFail = null;
