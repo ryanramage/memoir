@@ -296,7 +296,7 @@ define([
                   $('#lifestream').lifestream(settings, cb);
               },
               previous : function(cb) {
-                  couchr.get('_ddoc/_view/service_by_date', {limit: 200}, function(err, resp){
+                  couchr.get('_ddoc/_view/service_by_date', {limit: 200, descending: true}, function(err, resp){
                       var ids = {};
                       _.each(resp.rows, function(row){
                           var hash = [row.value.service, row.value.user, row.key].join('-');
@@ -311,6 +311,7 @@ define([
                   //item._id = item.config.service + '-' + item.date.getTime();
                   var hash = [item.config.service, item.config.user, item.date.getTime()].join('-');
                   if (results.previous[hash]) return;
+                  item._id = hash;
                   item.type = 'lifestream.service';
                   item.timestamp = item.date.getTime();
                   delete item.config._settings;
