@@ -99,7 +99,7 @@ define(['jquery', 'underscore', 'couchr', 'events'], function($, _, couchr, even
 
     exports.pause = function() {
         player.pause();
-    }
+    };
 
 	exports.play = function(date) {
         if (!button_on) return;

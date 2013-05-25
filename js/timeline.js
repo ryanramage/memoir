@@ -272,6 +272,22 @@ define([
         }
 
 
+        track_emitter.on('goto', function(date){
+
+            var current_domain = x.domain(),
+                date_time = date.getTime();
+                old_middle = scales.getMeanDate(current_domain).getTime(),
+                left_offset= current_domain[0].getTime() - old_middle,
+                right_middle= current_domain[1].getTime() - old_middle,
+                scale = {
+                    left_date: new Date(date_time + left_offset),
+                    right_date: new Date(date_time + right_middle)
+                };
+            redrawToDates(scale);
+            $('.play_btn').click();
+            audio_controller.play(date);
+        })
+
         $(function() {
             $('.btn.zoom_in').on('click',function(){
                 var current_domain = x.domain();
@@ -304,6 +320,54 @@ define([
                 redrawToDates(scale);
             });
 
+            // show/hide the node pane
+            $('.btn.add_note').on('click', function(){
+
+                var pane = $('.note_entry');
+
+                var close = function() {
+                    $('#add_note_text').val('');
+                    $('.note_entry .btn-primary').off('click');
+                    $('.note_entry .btn-cancel').off('click');
+                    $('.extra-options-pane').hide();
+                    pane.hide();
+                }
+
+                if (pane.is(":visible")) return close();
+
+                pane.show();
+
+
+                var time = scales.getMeanDate(x.domain()).getTime();
+
+                $('.note_entry .btn-primary').on('click', function(){
+                    // move to api
+                    var note = {
+                        type: 'memoir.tag',
+                        text: $('#add_note_text').val(),
+                        timestamp: time,
+                        length: 30000
+                    };
+                    couchr.post('_db', note, function(err, resp){
+                        if (err) return alert('Could not save: ' + err);
+
+                        note._id =  resp.id;
+                        track_emitter.emit('tag-added', note);
+
+                        close();
+                    });
+
+
+                });
+                $('.note_entry .btn-cancel').on('click', function() {
+                    close();
+                });
+            });
+
+            // the more texr was clicked
+            $('.extra-options').on('click', function(){
+                $('.extra-options-pane').show(400);
+            });
 
 
         });
@@ -382,8 +446,13 @@ define([
         track_emitter.emit('zoom', x, true);
     });
     exports.show_centre_date = function(date) {
-        var d_str = moment(date).format('ddd MMM D, h:mm:ss a, YYYY');
-        $('.toolbar .centre-date').text(d_str);
+        var m = moment(date);
+        //var d_str = m.format('ddd MMM D, h:mm:ss a, YYYY');
+
+        var t = $('<span>' + m.format('ddd ') + '</span><a href="#/journal/'+  m.format('YYYY-MM-DD')  +'">'+ m.format('MMM D') + '</a><span>, ' + m.format('h:mm:ss a, YYYY') + '</span>' );
+
+
+        $('.toolbar .centre-date').html(t);
     };
 
     return exports;
