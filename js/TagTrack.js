@@ -3,12 +3,63 @@
  * Date: 12-10-08
  * Time: 4:29 PM
  */
-define(['js/track', 'Class', 'jquery', 'underscore', 'couchr'], function (Track, Class, $, _, couchr) {
+define(['js/track', 'Class', 'jquery', 'underscore', 'couchr', 'd3'], function (Track, Class, $, _, couchr, d3) {
     var TagTrack = Class.design('TagTrack', {
         Extends: Track,
         initialize : function(settings, chart_details){
             TagTrack.Super.call(this, settings, chart_details);
             var me = this;
+
+
+            var drag = d3.behavior.drag()
+                .on("drag", function(d,i) {
+                    var newTime = me.x.invert(d3.event.x);
+                    if ($(this).attr('class') === 'r-resize') {
+                        d.end = newTime;
+                    } else {
+                        d.start = newTime;
+                    }
+                    me.space.selectAll("text")
+                        .attr("x", function(d) {  return me.x(d.start); })
+                        .text(function(d) { return d.t; });
+
+                    me.space.selectAll("rect.tag")
+                        .attr("x", function(d) {  return me.x(d.start); })
+                        .attr("width", function(d) {
+                            var w = me.x(d.end) - me.x(d.start);
+                            if (w < 1) w = 1;
+                            return w;
+                        });
+
+
+                    me.space.selectAll("rect.r-resize")
+                        .attr("x", function(d) {  return me.x(d.end) - 2; })
+                        .attr("width", function(d) {
+                            var w = 2;
+                            var l = me.x(d.end) - me.x(d.start);
+                            if (l < 5) w = 0;
+                            return w;
+                        });
+
+                    me.space.selectAll("rect.l-resize")
+                        .attr("x", function(d) {  return me.x(d.start); })
+                        .attr("width", function(d) {
+                            var w = 2;
+                            var l = me.x(d.end) - me.x(d.start);
+                            if (l < 5) w = 0;
+                            return w;
+                        });
+                })
+                .on("dragend", function(d, i){
+                    // update the tag
+                    couchr.put('_ddoc/_update/tag_dates/' + d.id, {
+                        timestamp: d.start.getTime(),
+                        duration : d.end.getTime() - d.start.getTime()
+                    }, function(err, resp){
+                        if (err) return alert('could not save ' + err);
+                    });
+                });
+
 
 
             me.getEntries = function(callback) {
@@ -37,26 +88,32 @@ define(['js/track', 'Class', 'jquery', 'underscore', 'couchr'], function (Track,
                         i.start = new Date(row.key - row.value.ms);
                         i.end = new Date(row.key);
                     }
-                    by_id[row.id] = i;
                     if (row.value.t) {
-                        by_id[row.id].t = row.value.t;
+                        i.t = row.value.t;
                     }
+                    else if (by_id[row.id] && by_id[row.id].t) {
+                        i.t = by_id[row.id].t
+                    }
+                    by_id[row.id] = i;
+
                 });
                 var data = _.values(by_id);
 
 
-                var rect = me.space.selectAll("rect")
+
+
+                var rect = me.space.selectAll("g")
                     .data(data,  function(d) { return d.id; });
 
                 //enter
-                rect.enter()
-                    .append("rect")
+                var g = rect.enter().append("g");
+                    g.append('rect')
                         .attr("class", "tag")
-                        .attr("x", function(d) {  return me.x(d.start); })
-                        .attr("y", me.settings.y + 1)
-                        .attr("height",me.settings.height - 1)
+                        .attr("x", function(d) {  return me.x(d.start) + 2; })
+                        .attr("y", me.settings.y + 14)
+                        .attr("height", 12)
                         .attr("width", function(d) {
-                            var w = me.x(d.end) - me.x(d.start);
+                            var w = me.x(d.end) - me.x(d.start) - 2;
                             if (w < 1) w = 1;
                             return w;
                         })
@@ -64,18 +121,47 @@ define(['js/track', 'Class', 'jquery', 'underscore', 'couchr'], function (Track,
                         .on('click', function(d,i){
                             $(this).addClass('hover');
                             me.chart_details.emitter.emit('goto', d.start);
-                        })
-                        .on('mouseover', function(d,i){ $(this).addClass('hover');      })
-                        .on('mouseout', function(d,i){  $(this).removeClass('hover');   });
+                        });
 
+
+
+                        // left resizer
+                        g.append('rect')
+                            .attr("class", "l-resize")
+                            .attr("x", function(d) {  return me.x(d.start); })
+                            .attr("y", me.settings.y + 14)
+                            .attr("height", 12)
+                            .attr("width", function(d) {
+                                var w = 2;
+                                var l = me.x(d.end) - me.x(d.start);
+                                if (l < 5) w = 0;
+                                return w;
+                            })
+                            .call(drag);
+
+                        // right resizer
+                        g.append('rect')
+                            .attr("class", "r-resize")
+                            .attr("x", function(d) {  return me.x(d.end) - 2; })
+                            .attr("y", me.settings.y + 14)
+                            .attr("height", 12)
+                            .attr("width", function(d) {
+                                var w = 2;
+                                var l = me.x(d.end) - me.x(d.start);
+                                if (l < 5) w = 0;
+                                return w;
+                            })
+                            .call(drag);
+
+
+
+                    g.append('text')
+                        .attr("x", function(d) {  return me.x(d.start); })
+                        .attr("y", me.settings.y + 12)
+                        .text(function(d) { return d.t; });
 
                 //update
-                rect.attr("x", function(d) { return me.x(d.start); })
-                    .attr("width", function(d) {
-                        var w = me.x(d.end) - me.x(d.start);
-                        if (w < 1) w = 1;
-                        return w;
-                    });
+
 
                 // delete
                 rect.exit()
@@ -93,30 +179,68 @@ define(['js/track', 'Class', 'jquery', 'underscore', 'couchr'], function (Track,
                 var data = [{
                     id: tag._id,
                     start: new Date(tag.timestamp),
-                    end: new Date(tag.timestamp + tag.length)
+                    end: new Date(tag.timestamp + tag.length),
+                    t: tag.text
                 }]
 
                 var rect = me.space.selectAll("rect")
                     .data(data, function(d) { return d.id; });
 
-                rect.enter().append("rect")
-                    .attr("class", "tag")
-                    .attr("x", function(d) {  return me.x(d.start); })
-                    .attr("y", me.settings.y + 1)
-                    .attr("height",me.settings.height - 1)
-                    .attr("width", function(d) {
-                        var w = me.x(d.end) - me.x(d.start);
-                        if (w < 1) w = 1;
-                        return w;
-                    })
-                    .attr("fill", "#FBB829")
-                    .on('click', function(d,i){
-                        $(this).addClass('hover');
-                        me.chart_details.emitter.emit('goto', d.start);
-                    })
-                    .on('mouseover', function(d,i){ console.log('over'); $(this).addClass('hover');      })
-                    .on('mouseout', function(d,i){  console.log('out');  $(this).removeClass('hover');   });
 
+                //enter
+                var g = rect.enter().append("g");
+                    g.append('rect')
+                        .attr("class", "tag")
+                        .attr("x", function(d) {  return me.x(d.start) + 2; })
+                        .attr("y", me.settings.y + 14)
+                        .attr("height", 12)
+                        .attr("width", function(d) {
+                            var w = me.x(d.end) - me.x(d.start) - 2;
+                            if (w < 1) w = 1;
+                            return w;
+                        })
+                        .attr("fill", "#FBB829")
+                        .on('click', function(d,i){
+                            $(this).addClass('hover');
+                            me.chart_details.emitter.emit('goto', d.start);
+                        });
+
+
+
+                        // left resizer
+                        g.append('rect')
+                            .attr("class", "l-resize")
+                            .attr("x", function(d) {  return me.x(d.start); })
+                            .attr("y", me.settings.y + 14)
+                            .attr("height", 12)
+                            .attr("width", function(d) {
+                                var w = 2;
+                                var l = me.x(d.end) - me.x(d.start);
+                                if (l < 5) w = 0;
+                                return w;
+                            })
+                            .call(drag);
+
+                        // right resizer
+                        g.append('rect')
+                            .attr("class", "r-resize")
+                            .attr("x", function(d) {  return me.x(d.end) - 2; })
+                            .attr("y", me.settings.y + 14)
+                            .attr("height", 12)
+                            .attr("width", function(d) {
+                                var w = 2;
+                                var l = me.x(d.end) - me.x(d.start);
+                                if (l < 5) w = 0;
+                                return w;
+                            })
+                            .call(drag);
+
+
+
+                    g.append('text')
+                        .attr("x", function(d) {  return me.x(d.start); })
+                        .attr("y", me.settings.y + 12)
+                        .text(function(d) { return d.t; });
             });
 
 
@@ -133,13 +257,37 @@ define(['js/track', 'Class', 'jquery', 'underscore', 'couchr'], function (Track,
         zoom: function(x_domain, quick) {
             TagTrack.Super.prototype.zoom.call(this, x_domain, quick);
             var me = this;
-            me.space.selectAll("rect")
+            me.space.selectAll("text")
+                .attr("x", function(d) {  return me.x(d.start); })
+                .text(function(d) { return d.t; });
+
+            me.space.selectAll("rect.tag")
                 .attr("x", function(d) {  return me.x(d.start); })
                 .attr("width", function(d) {
                     var w = me.x(d.end) - me.x(d.start);
                     if (w < 1) w = 1;
                     return w;
                 });
+
+
+            me.space.selectAll("rect.r-resize")
+                .attr("x", function(d) {  return me.x(d.end) - 2; })
+                .attr("width", function(d) {
+                    var w = 2;
+                    var l = me.x(d.end) - me.x(d.start);
+                    if (l < 5) w = 0;
+                    return w;
+                });
+
+            me.space.selectAll("rect.l-resize")
+                .attr("x", function(d) {  return me.x(d.start); })
+                .attr("width", function(d) {
+                    var w = 2;
+                    var l = me.x(d.end) - me.x(d.start);
+                    if (l < 5) w = 0;
+                    return w;
+                });
+
             if (!quick) me.drawEntriesDebounced();
         }
 
