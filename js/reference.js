@@ -16,6 +16,7 @@ define([
 
     exports.getHtml = function(doc){
         if (doc.type === 'lifestream.service') return doc.html;
+        if (doc.type === 'memoir.tag') return doc.text;
     };
 
     exports.getTextDesc = function(doc){
@@ -72,6 +73,7 @@ define([
                 icon_class : exports.getIconClass(tl_doc),
                 url : exports.getHref(tl_doc),
                 ref_date : moment(tl_doc.timestamp).format("h:mm:ss a"),
+                link_date: '#/timeline/' + date_utils.stringifyDate(tl_doc.timestamp),
                 index :index++,
                 id : tl_doc._id
             };

@@ -61,7 +61,7 @@ function($, _, couchr, async, birddown, CalHeatMap, reference, all_t, view_t){
             var reference_sheet = reference.createReferenceSheet(data);
 
             var markup = "";
-            if (data.journal.entry) {
+            if (data. journal && data.journal.entry) {
                 markup = bd.parse(data.journal.entry  + reference.generateReferenceSheetMarkdown(reference_sheet.references));
             }
             $(selector).html(view_t({
