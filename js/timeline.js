@@ -335,10 +335,14 @@ define([
 
                 if (pane.is(":visible")) return close();
 
+
                 pane.show();
 
+                var dt = scales.getMeanDate(x.domain());
+                var time = dt.getTime();
 
-                var time = scales.getMeanDate(x.domain()).getTime();
+                $('.when').text(moment(dt).format('ddd MMM D, h:mm:ss a, YYYY'));
+                $('#add_note_text').focus();
 
                 $('.note_entry .btn-primary').on('click', function(){
                     // move to api
