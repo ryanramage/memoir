@@ -1,0 +1,16 @@
+{
+  "name": "jquery-lifestream",
+  "version": "0.3.2-jam.1",
+  "description": "Show a stream of your online activity with jQuery",
+  "categories": ["Visualization"],
+  "jam" : {
+      "dependencies": {
+        "jquery": ">=1.4.2",
+        "handlebars" : null,
+        "underscore" : null,
+        "moment" : null
+      },
+      "main" : "core.js"
+  },
+  "github" : "http://github.com/eckoit/jquery-lifestream"
+}
