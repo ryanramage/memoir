@@ -1,7 +1,12 @@
-define('jam/jquery-lifestream/services/twitter', ['jquery', 'handlebars'], function(_, Handlebars){
+define('jam/jquery-lifestream/services/twitter', ['jquery', 'handlebars', 'twitter-text'], function(_, Handlebars, twitter){
 return function( config, callback ) {
 
-  var template = $.extend({},
+ var yql = 'USE "http://yqlblog.net/samples/data.html.cssselect.xml"' +
+      ' AS data.html.cssselect;' +
+      ' SELECT * FROM data.html.cssselect' +
+      ' WHERE url = "https://twitter.com/' + config.user + '"' +
+      ' AND css = ".js-stream-tweet"',
+    template = $.extend({},
     {
       posted: Handlebars.compile('{{{tweet}}}')
     },
@@ -48,43 +53,48 @@ return function( config, callback ) {
     return hash(at(link(tweet)));
 
   },
-  /**
+ /**
    * Parse the input from twitter
    */
   parseTwitter = function( input ) {
-    var output = [], i = 0, j, status;
+    var output = [],
+      $xml = $(input);
 
-    if( input && input.length > 0 ) {
-      j = input.length;
-      for( ; i<j; i++ ) {
-        status = input[i];
+    $xml.find('.js-stream-tweet').each(function(){
+      var $tweet = $(this),
+        text = $tweet.find('.js-tweet-text')
+          .find('.tco-ellipsis').remove().end()
+          .text(),
+        $time = $tweet.find('.tweet-timestamp'),
+        created_at = new Date($time.attr('title')),
+        url = $time.attr('href');
+
+
         output.push({
-          date: new Date(status.created_at),
+          date: created_at,
           config: config,
           html: template.posted( {
-            tweet: linkify(status.text),
-            complete_url: 'http://twitter.com/#!/' + config.user + "/status/" + status.id_str
+            tweet:  twitter.autoLink( text ) ,
+            complete_url: 'http://twitter.com/#!/' + url
           } ),
-          url: 'https://twitter.com/eckoit/status/' + status.id_str,
-          raw: status
+          url: 'http://twitter.com/#!/' + config.user
         });
-      }
-    }
+    });
+
     return output;
   };
 
   $.ajax({
-    url: "https://api.twitter.com/1/statuses/user_timeline.json",
-    data: {
-      screen_name: config.user,
-      include_rts: 1 // Include retweets
-    },
-    dataType: 'jsonp',
-    success: function( data ) {
-      callback(null, parseTwitter(data));
-    },
-    error : function() {
-        callback('cant get twitter');
+    // we need xml so we can get the entire tweet text
+    url: "http://query.yahooapis.com/v1/public/yql?q=" +
+      encodeURIComponent(yql),
+    dataType: 'text',
+    success: function( xml ) {
+      callback(null, parseTwitter(
+          // revert yql beautification
+          xml.replace(/(\r\n|\n|\r)/gm, '').replace(/>\s+</gm, '><')
+            .replace(/\s+/gm, ' ')
+      ));
     }
   });
 
