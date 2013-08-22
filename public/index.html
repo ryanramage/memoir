@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Memoir</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link rel="shortcut icon" href="img/favicon.ico">
+
+  </head>
+
+  <body >
+      <div id="dashboard-topbar">
+
+      </div>
+
+      <div class="container-fluid app-container">
+        <div class="row-fluid">
+          <div class="span2">
+              <div class="well sidebar-nav">
+                  <ul class="nav nav-list">
+                    <li class="nav-header">Main</li>
+                    <li class="quick">
+                        <a href="#/quick">Quick Entry</a>
+                    </li>
+                    <li class="timeline">
+                      <a href="#/timeline">Timeline</a>
+                    </li>
+                    <li class="journal">
+                       <a href="#/journal">Journal</a>
+                    </li>
+                    <li class="people">
+                      <a href="#/people">People</a>
+                    </li>
+                    <li class="topics">
+                      <a href="#/topics">Topics</a>
+                    </li>
+
+                    <li class="upload">
+                      <a href="#/upload">Upload</a>
+                    </li>
+
+                    <li class="settings">
+                      <a href="#/settings">Settings</a>
+                    </li>
+
+
+                    <li class="nav-header">Audio</li>
+                    <li>
+                      <audio id="player1"></audio>
+                      <button class="btn btn-large play_btn" data-toggle="button">&#9658;</button>
+                    </li>
+
+
+
+
+
+                    <li class="month_summary nav-header hide">Month Summary</li>
+                    <li class="month_summary hide"><span class="tag-total"></span> tags</li>
+                    <li class="month_summary hide"><span class="audio-total"></span> hrs audio</li>
+
+                  </ul>
+              </div>
+
+          </div>
+          <div class="span10 main">
+
+
+
+
+
+          </div>
+        </div>
+      </div>
+
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script type="text/javascript">
+      function load(){
+
+        require(['js/app', 'domReady', 'jquery'], function (app, domReady, $) {
+          window.$ = $;
+          // the topbar needed jquery to be loaded.
+          app.init();
+
+
+          // the bootstrap jquery
+          if ($.fn.popover) return domReady(app.on_dom_ready);
+
+          require(['jam/bootstrap/js/bootstrap-tooltip.js', 'jam/bootstrap/js/bootstrap-button.js'], function(){
+             require(['jam/bootstrap/js/bootstrap-popover.js'], function(){
+                domReady(app.on_dom_ready)
+             })
+          });
+        });
+
+      }
+      function loadDev(){
+          var script = document.createElement("script");
+          script.src = 'jam/require.js';
+          script.onload = load;
+          document.head.appendChild( script );
+
+          var script2 = document.createElement("script");
+          script2.src = 'js/live.js';
+
+          document.head.appendChild( script2 );
+
+      }
+    </script>
+    <script src="jam/require.prod.js" onerror="loadDev()" onload="load()"></script>
+  </body>
+</html>

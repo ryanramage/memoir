@@ -1,8 +1,0 @@
-[
-    "/jam/boostrap/docs/*",
-    "/jam/bootstrap/js/tests/*",
-    "/jam/bootstrap/less/tests/*",
-    "/jam/cal-heatmap/coverage/*",
-    "/jam/cal-heatmap/report/*",
-    "/jam/cal-heatmap/src/*"
-]
